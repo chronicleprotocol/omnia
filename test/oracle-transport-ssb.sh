@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 TEST_PATH=$(cd "${BASH_SOURCE[0]%/*}" && pwd)
-bin_path="$TEST_PATH/../bin"
+bin_path="$TEST_PATH/../exec"
 
 export TEST_PATH
 export TEST_SET_NON_STALE_MESSAGES
