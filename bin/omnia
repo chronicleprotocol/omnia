@@ -1,5 +1,27 @@
 #!/usr/bin/env bash
+set -e
 
-(cd "${BASH_SOURCE[0]%/*}/../lib"
-  exec ./omnia.sh
+if [[ -n $OMNIA_DEBUG ]]; then
+	env
+	set -x
+fi
+
+(cd "${BASH_SOURCE[0]%/*/*}/lib"
+# shellcheck source=./config.sh
+	source ./config.sh
+	source ./gasprice.sh
+	source ./ethereum.sh
+	source ./log.sh
+	source ./scuttlebot.sh
+	source ./source.sh
+	source ./status.sh
+	source ./util.sh
+	source ./transport.sh
+	source ./feed.sh
+	source ./relayer.sh
+	source ./omnia.sh
 )
+
+initEnv
+[[ "$OMNIA_MODE" == "RELAYER" || "$OMNIA_MODE" == "RELAY" ]] && runRelayer
+[[ "$OMNIA_MODE" == "FEED" ]] && runFeed

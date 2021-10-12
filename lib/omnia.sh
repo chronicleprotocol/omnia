@@ -1,23 +1,3 @@
-#!/usr/bin/env bash
-
-if [[ -n $OMNIA_DEBUG ]]; then
-	env
-	set -x
-fi
-
-# shellcheck source=./config.sh
-. ./config.sh
-. ./gasprice.sh
-. ./ethereum.sh
-. ./log.sh
-. ./scuttlebot.sh
-. ./source.sh
-. ./status.sh
-. ./util.sh
-. ./transport.sh
-. ./feed.sh
-. ./relayer.sh
-
 #initialize environment
 initEnv () {
 	OMNIA_VERSION="$(cat ../version)"
@@ -61,7 +41,7 @@ initEnv () {
 	echo ""
 	echo "ORACLE"
 	for assetPair in "${assetPairs[@]}"; do
-		printf '   %s\n' "$assetPair" 
+		printf '   %s\n' "$assetPair"
 		[[ $OMNIA_MODE == "RELAYER" || "$OMNIA_MODE" == "RELAY" ]] && printf '      Oracle Address:              %s\n' "$(getOracleContract "$assetPair")"
 		printf '      Message Expiration:          %s seconds\n' "$(getMsgExpiration "$assetPair")"
 		[[ $OMNIA_MODE == "FEED" ]] && printf '      Message Spread:              %s %% \n' "$(getMsgSpread "$assetPair")"
@@ -88,7 +68,3 @@ runRelayer () {
 		sleep "$OMNIA_INTERVAL"
     done
 }
-
-initEnv
-[[ "$OMNIA_MODE" == "RELAYER" || "$OMNIA_MODE" == "RELAY" ]] && runRelayer
-[[ "$OMNIA_MODE" == "FEED" ]] && runFeed
