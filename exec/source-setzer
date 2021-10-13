@@ -2,12 +2,8 @@
 set -eo pipefail
 if [[ -n $OMNIA_DEBUG ]]; then set -x; fi
 
-echo >&2 "out setzer - OMNIA_DEBUG:$OMNIA_DEBUG;OMNIA_CONFIG:$OMNIA_CONFIG;OMNIA_VERBOSE:$OMNIA_VERBOSE"
-(cd "$(cd "${0%/*/*}" && pwd)/lib"
-	source ./log.sh
+cd "$(cd "${0%/*/*}" && pwd)/lib"
+source ./log.sh
+verbose --list "setzer call" "$@"
 
-	echo >&2 "in setzer - OMNIA_DEBUG:$OMNIA_DEBUG;OMNIA_CONFIG:$OMNIA_CONFIG;OMNIA_VERBOSE:$OMNIA_VERBOSE"
-	verbose --list "setzer call" "$@"
-
-	exec setzer "$@"
-)
+exec setzer "$@"
