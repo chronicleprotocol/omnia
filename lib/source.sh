@@ -29,11 +29,12 @@ readSourcesWithSetzer()  {
 }
 
 _mapSetzer() {
-	if [[ -n $OMNIA_DEBUG ]]; then set -x; fi
+	set -x
 	local _assetPair=$1
 	local _source=$2
 	local _price
-	_price=$(ETH_RPC_URL="$SETZER_ETH_RPC_URL" "source-setzer" price "$_assetPair" "$_source")
+	_price=$(ETH_RPC_URL="$SETZER_ETH_RPC_URL" \
+	"source-setzer" price "$_assetPair" "$_source")
 	if [[ -n "$_price" && "$_price" =~ ^([1-9][0-9]*([.][0-9]+)?|[0][.][0-9]*[1-9]+[0-9]*)$ ]]; then
 		jq -nc \
 			--arg s $_source \
@@ -42,6 +43,7 @@ _mapSetzer() {
 	else
 		error "$_assetPair price from $_source is $_price"
 	fi
+	set +x
 }
 export -f _mapSetzer
 
