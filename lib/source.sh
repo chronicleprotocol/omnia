@@ -29,7 +29,6 @@ readSourcesWithSetzer()  {
 }
 
 _mapSetzer() {
-	set -x
 	local _assetPair=$1
 	local _source=$2
 	local _price
@@ -43,14 +42,13 @@ _mapSetzer() {
 	else
 		error "$_assetPair price from $_source is $_price"
 	fi
-	set +x
 }
 export -f _mapSetzer
 
 readSourcesWithGofer()   {
 	local _output
 	_output=$(gofer price --config "$GOFER_CONFIG" --format json "$@")
-
+	verbose "gofer output" "$_output"
 	echo "$_output" | jq -c '
 		.[]
 		| {
