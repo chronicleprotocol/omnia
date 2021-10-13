@@ -5,7 +5,7 @@ function log() {
 
 #log verbose console output with timestamp
 function verbose() {
-	if [[ -n $OMNIA_VERBOSE ]] && [[ $OMNIA_VERBOSE != "false" ]] && [[ $OMNIA_VERBOSE != "0" ]]; then
+	if  [[ $OMNIA_VERBOSE == "true" ]]; then
 		_log "verbose" "$@" >&2
 	fi
 }
