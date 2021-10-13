@@ -2,10 +2,11 @@
 set -eo pipefail
 if [[ -n $OMNIA_DEBUG ]]; then set -x; fi
 
-LIB_PATH="$(cd "${0%/*/*}" && pwd)/lib"
-source "$LIB_PATH/log.sh"
+(cd "$(cd "${0%/*/*}" && pwd)/lib"
+	source ./log.sh
 
-# log calls to seth
-verbose --list "seth call" "$@"
+	# log calls to seth
+	verbose --list "seth call" "$@"
 
-exec seth "$@"
+	exec seth "$@"
+)
