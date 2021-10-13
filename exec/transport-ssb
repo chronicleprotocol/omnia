@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -eo pipefail
 if [[ -n $OMNIA_DEBUG ]]; then set -x; fi
-set -x
+
 _command="$1"
 
 LIB_PATH="$(cd "${0%/*/*}" && pwd)/lib"
@@ -13,8 +13,10 @@ source "$LIB_PATH/status.sh"
 isntStale() {
 	local _latestMsg="$1"
 	local _msg="$2"
-	local _median=$(jq -r .price <<<"$_msg")
-	local _assetPair=$(jq -r .type <<<"$_msg")
+	local _median
+	_median=$(jq -r .price <<<"$_msg")
+	local _assetPair
+	_assetPair=$(jq -r .type <<<"$_msg")
 
 	[[ "$(isEmpty "$_latestMsg")" == "false" \
 	&& "$(isAssetPair "$_assetPair" "$_latestMsg")" == "true" \
