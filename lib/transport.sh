@@ -6,8 +6,9 @@ transportPublish() {
 		log "Publishing $_assetPair price message with $_publisher"
 		if "$_publisher" publish "$_message"; then
 			((_succ++))
+			verbose "Published message" "asset=$_assetPair" "transport=$_publisher"
 		else
-			error "Failed publishing $_assetPair price with $_publisher"
+			error "Failed publishing message" "asset=$_assetPair" "transport=$_publisher"
 		fi
 	done
 

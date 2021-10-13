@@ -42,7 +42,7 @@ readSourcesWithSetzer()  {
 		, sources: .|add
 		}' <<<"$_prices")"
 
-	verbose --list "setzer price" "$_output"
+	verbose --raw "setzer price" "$_output"
 	echo "$_output"
 }
 
@@ -63,6 +63,6 @@ readSourcesWithGofer()   {
 		}
 	' <<<"$(gofer price --config "$GOFER_CONFIG" --format json "$@")")"
 
-	verbose --list "gofer price" "$_output"
+	verbose --raw "gofer price" "$_output"
 	echo "$_output"
 }

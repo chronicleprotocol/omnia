@@ -60,6 +60,8 @@ function _log() {
 		else
 			if [[ $_argType == "list" ]]; then
 				_logEntry="$(_jsonArgs "level=$_level" "msg=$_msg" "time#=$(date "+%s")" "#=$(_jsonList "$@")")"
+			elif [[ $_argType == "raw" ]]; then
+				_logEntry="$(_jsonArgs "level=$_level" "msg=$_msg" "time#=$(date "+%s")" "#=$*")"
 			else
 				_logEntry="$(_jsonArgs "level=$_level" "msg=$_msg" "time#=$(date "+%s")" "#=$(_jsonArgs "$@")")"
 			fi
