@@ -2,11 +2,11 @@
 set -eo pipefail
 if [[ -n $OMNIA_DEBUG ]]; then set -x; fi
 
-echo >&2 "out eth - OMNIA_DEBUG:$OMNIA_DEBUG;OMNIA_CONFIG:$OMNIA_CONFIG"
+echo >&2 "out eth - OMNIA_DEBUG:$OMNIA_DEBUG;OMNIA_CONFIG:$OMNIA_CONFIG;OMNIA_VERBOSE:$OMNIA_VERBOSE"
 (cd "$(cd "${0%/*/*}" && pwd)/lib"
 	source ./log.sh
 
-  echo >&2 "in eth - OMNIA_DEBUG:$OMNIA_DEBUG;OMNIA_CONFIG:$OMNIA_CONFIG"
+  echo >&2 "in eth - OMNIA_DEBUG:$OMNIA_DEBUG;OMNIA_CONFIG:$OMNIA_CONFIG;OMNIA_VERBOSE:$OMNIA_VERBOSE"
 	verbose --list "seth call" "$@"
 
 	exec seth "$@"
