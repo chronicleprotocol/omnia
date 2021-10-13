@@ -4,11 +4,11 @@ if [[ -n $OMNIA_DEBUG ]]; then set -x; fi
 
 _command="$1"
 
-LIB_PATH="$(cd "${0%/*/*}" && pwd)/lib"
-source "$LIB_PATH/log.sh"
-source "$LIB_PATH/config.sh"
-source "$LIB_PATH/util.sh"
-source "$LIB_PATH/status.sh"
+cd "$(cd "${0%/*/*}" && pwd)/lib"
+source ./log.sh
+source ./config.sh
+source ./util.sh
+source ./status.sh
 
 isntStale() {
 	local _latestMsg="$1"
