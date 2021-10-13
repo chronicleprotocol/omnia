@@ -36,15 +36,7 @@ stdenv.mkDerivation rec {
     chmod +x $out/bin/*
     find $out/bin -type f | while read -r x; do
       wrapProgram "$x" \
-        --prefix PATH : "$out/exec:${path}" \
-        ${locales}
-    done
-
-    cp -r ./exec $out/exec
-    chmod +x $out/exec/*
-    find $out/exec -type f | while read -r x; do
-      wrapProgram "$x" \
-        --prefix PATH : "$out/exec:${path}" \
+        --prefix PATH : "$out/bin:${path}" \
         ${locales}
     done
   '';
