@@ -5,7 +5,7 @@ function log() {
 
 #log verbose console output with timestamp
 function verbose() {
-	if  [[ $OMNIA_VERBOSE == "true" ]]; then
+	if [[ -n $OMNIA_VERBOSE ]] && [[ $OMNIA_VERBOSE != "false" ]] && [[ $OMNIA_VERBOSE != "0" ]]; then
 		_log "verbose" "$@" >&2
 	fi
 }
@@ -21,7 +21,7 @@ function warning() {
 
 #log debug information after error
 function debug() {
-	if  [[ -n $OMNIA_DEBUG ]] && [[ $OMNIA_DEBUG != "false" ]] && [[ $OMNIA_DEBUG != "0" ]]; then
+	if [[ -n $OMNIA_DEBUG ]] && [[ $OMNIA_DEBUG != "false" ]] && [[ $OMNIA_DEBUG != "0" ]]; then
 		_log "debug" "$@" >&2
 	fi
 }
