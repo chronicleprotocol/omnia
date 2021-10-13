@@ -13,12 +13,14 @@ stdenv.mkDerivation rec {
 
   buildPhase = ''
     find ./bin -type f | while read -r x; do patchShebangs "$x"; done
+    find ./exec -type f | while read -r x; do patchShebangs "$x"; done
   '';
 
   doCheck = true;
   checkPhase = ''
     find . -name '*_test*' -or -path "*/test/*.sh" | while read -r x; do
-      patchShebangs "$x"; $x
+      patchShebangs "$x"
+      PATH="./exec:$PATH" $x
     done
   '';
 
@@ -35,7 +37,15 @@ stdenv.mkDerivation rec {
     chmod +x $out/bin/*
     find $out/bin -type f | while read -r x; do
       wrapProgram "$x" \
-        --prefix PATH : "$out/bin:${path}" \
+        --prefix PATH : "$out/exec:${path}" \
+        ${locales}
+    done
+
+    cp -r ./exec $out/exec
+    chmod +x $out/exec/*
+    find $out/exec -type f | while read -r x; do
+      wrapProgram "$x" \
+        --prefix PATH : "$out/exec:${path}" \
         ${locales}
     done
   '';
