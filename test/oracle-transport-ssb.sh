@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 TEST_PATH=$(cd "${BASH_SOURCE[0]%/*}" && pwd)
-bin_path="$TEST_PATH/../exec"
 
 export TEST_PATH
 export TEST_SET_NON_STALE_MESSAGES
@@ -42,14 +41,15 @@ export ETH_PASSWORD="$TEST_PATH/../../tests/resources/password"
 
 currentTime=$(timestamp 0)
 
-"$bin_path"/transport-ssb pull f33d1d BTC/USD > $wdir/output
+export PATH="${0%/*/*}/exec:${PATH}"
+transport-ssb pull f33d1d BTC/USD > $wdir/output
 assert "pulled price message" json '.type' <<<'"BTCUSD"'
 
 echo '{}' > $wdir/output
-assert "broadcast price message" run "$bin_path"/transport-ssb publish '{"hash":"AB","price":0.222,"priceHex":"ABC","signature":"CD","sources":{"s1":"0.1","s2":"0.2","s3":"0.3"},"time":'$currentTime',"timeHex":"DEF","type":"BTCUSD","version":"dev-test"}'
+assert "broadcast price message" run transport-ssb publish '{"hash":"AB","price":0.222,"priceHex":"ABC","signature":"CD","sources":{"s1":"0.1","s2":"0.2","s3":"0.3"},"time":'$currentTime',"timeHex":"DEF","type":"BTCUSD","version":"dev-test"}'
 assert "verify the broadcast message" json . <<<'{"price":0.222,"hash":"AB","priceHex":"ABC","signature":"CD","sources":{"s1":"0.1","s2":"0.2","s3":"0.3"},"time":'$currentTime',"timeHex":"DEF","type":"BTCUSD","version":"dev-test"}'
 
 TEST_SET_NON_STALE_MESSAGES=1
 echo '{}' > $wdir/output
-assert "broadcast message with non-stale latest message" run "$bin_path"/transport-ssb publish '{"hash":"AB","price":0.222,"priceHex":"ABC","signature":"CD","sources":{"s1":"0.1","s2":"0.2","s3":"0.3"},"time":'$currentTime',"timeHex":"DEF","type":"BTCUSD","version":"dev-test"}'
+assert "broadcast message with non-stale latest message" run transport-ssb publish '{"hash":"AB","price":0.222,"priceHex":"ABC","signature":"CD","sources":{"s1":"0.1","s2":"0.2","s3":"0.3"},"time":'$currentTime',"timeHex":"DEF","type":"BTCUSD","version":"dev-test"}'
 assert "no broadcast should have been done" json '.' <<<'{}'

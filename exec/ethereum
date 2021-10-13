@@ -2,9 +2,8 @@
 set -eo pipefail
 if [[ -n $OMNIA_DEBUG ]]; then set -x; fi
 
-_LIB_DIR="${BASH_SOURCE[0]%/*}/../lib"
-
-source $_LIB_DIR/log.sh
+LIB_PATH="$(cd "${0%/*/*}" && pwd)/lib"
+source "$LIB_PATH/log.sh"
 
 # log calls to seth
 verbose --list "seth call" "$@"

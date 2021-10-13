@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 set -eo pipefail
 if [[ -n $OMNIA_DEBUG ]]; then set -x; fi
-
-_here=$(cd "${BASH_SOURCE[0]%/*}" && pwd)
+set -x
 _command="$1"
 
-. "$_here/../lib/log.sh"
-. "$_here/../lib/config.sh"
-. "$_here/../lib/util.sh"
-. "$_here/../lib/status.sh"
+LIB_PATH="$(cd "${0%/*/*}" && pwd)/lib"
+source "$LIB_PATH/log.sh"
+source "$LIB_PATH/config.sh"
+source "$LIB_PATH/util.sh"
+source "$LIB_PATH/status.sh"
 
 isntStale() {
 	local _latestMsg="$1"
@@ -66,10 +66,12 @@ pullLatestFeedMsgOfType() {
 
 publishMsg() {
 	local _msg="$1"
-	local _assetPair=$(jq -r .type <<<"$_msg")
-	local _feedId=$(getMyId)
+	local _assetPair
+	_assetPair=$(jq -r .type <<<"$_msg")
+	local _feedId
+	_feedId=$(getMyId)
 	if isntStale "$(pullLatestFeedMsgOfType "$_feedId" "$_assetPair")" "$_msg"; then
-		echo >&2 "Scuttlebot Info: Not publishing, last message not stale."
+		echo >&2 "Scuttlebutt Info: Not publishing, last message not stale."
 	else
 		ssb-server publish . <<<"$_msg" | jq -c .
 	fi
