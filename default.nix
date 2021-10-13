@@ -13,7 +13,6 @@ stdenv.mkDerivation rec {
 
   buildPhase = ''
     find ./bin -type f | while read -r x; do patchShebangs "$x"; done
-    find ./exec -type f | while read -r x; do patchShebangs "$x"; done
   '';
 
   doCheck = true;
