@@ -5,7 +5,8 @@ readSourcesWithSetzer()  {
 	_setzerAssetPair="${_setzerAssetPair,,}"
 	local _prices
 
-	_prices=$(ETH_RPC_URL="$SETZER_ETH_RPC_URL" "source-setzer" sources "$_setzerAssetPair" \
+	_prices=$(ETH_RPC_URL="$SETZER_ETH_RPC_URL" \
+	  "source-setzer" sources "$_setzerAssetPair" \
 		| parallel \
 			-j${OMNIA_SOURCE_PARALLEL:-0} \
 			--termseq KILL \
