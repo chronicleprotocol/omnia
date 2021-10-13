@@ -20,6 +20,7 @@ source "$LIB_PATH/feed.sh"
 source "$LIB_PATH/relayer.sh"
 source "$LIB_PATH/omnia.sh"
 
+initEnv
 if [[ "$OMNIA_MODE" == "RELAYER" || "$OMNIA_MODE" == "RELAY" ]]; then
 	runRelayer
 elif [[ "$OMNIA_MODE" == "FEED" ]]; then

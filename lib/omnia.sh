@@ -1,5 +1,8 @@
 #initialize environment
 initEnv () {
+	echo "${0}"
+	pwd
+
 	OMNIA_VERSION="$(cat ../version)"
 
 	#Load Global configuration
