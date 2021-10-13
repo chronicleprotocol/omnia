@@ -6,4 +6,5 @@ cd "$(cd "${0%/*/*}" && pwd)/lib"
 source ./log.sh
 verbose --list "setzer call" "$@"
 
-exec setzer "$@"
+export ETH_RPC_URL="$SETZER_ETH_RPC_URL"
+setzer "$@"
