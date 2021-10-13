@@ -27,8 +27,7 @@ readSourcesAndBroadcastAllPriceMessages()  {
 			_median=$(jq -r .median <<<"$_json")
 			local _sources
 			_sources=$(jq -rS '.sources' <<<"$_json")
-			local _message
-			_message=$(validateAndConstructMessage "$_assetPair" "$_median"	"$_sources")
+			local _message=$(validateAndConstructMessage "$_assetPair" "$_median"	"$_sources")
 
 			if [[ -z "$_message" ]]; then
 				error "Failed constructing $_assetPair price message"
@@ -39,7 +38,7 @@ readSourcesAndBroadcastAllPriceMessages()  {
 
 			unset _unpublishedPairs["$_assetPair"]
 
-			transportPublish "$_assetPair" "$_message"
+			transportPublish "$_assetPair" "$_message" || error "all transports failed" "asset=$_assetPair"
 		done < <(readSource "$_src" "${!_unpublishedPairs[@]}")
 	done
 }

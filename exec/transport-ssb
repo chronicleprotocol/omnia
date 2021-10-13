@@ -44,7 +44,7 @@ pullLatestFeedMsgOfType() {
 	local _feed=$(getId "$1")
 	local _assetPair="$2"
 	_assetPair=${_assetPair/\/}
-	#_assetPair=${_assetPair^^}
+	_assetPair=${_assetPair^^}
 	ssb-server createUserStream \
 		--id "$_feed" --limit "$OMNIA_MSG_LIMIT" \
 		--reverse --fillCache 1 \
@@ -73,7 +73,7 @@ publishMsg() {
 	local _feedId
 	_feedId=$(getMyId)
 	if isntStale "$(pullLatestFeedMsgOfType "$_feedId" "$_assetPair")" "$_msg"; then
-		echo >&2 "Scuttlebutt Info: Not publishing, last message not stale."
+		log "Not publishing, last message is NOT stale." "transport=ssb" "feed=$_feedId" "asset=$_assetPair"
 	else
 		ssb-server publish . <<<"$_msg" | jq -c .
 	fi

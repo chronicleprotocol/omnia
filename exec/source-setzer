@@ -7,4 +7,5 @@ source ./log.sh
 verbose --list "setzer call" "$@"
 
 export ETH_RPC_URL="$SETZER_ETH_RPC_URL"
+
 setzer "$@"

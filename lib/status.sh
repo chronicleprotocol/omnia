@@ -99,17 +99,17 @@ isStale () {
 	local _newPrice="$2"
 	local _spreadLimit="$3"
 	local _spread
-	log "Old Price = ${_oldPrice}   New Price = ${_newPrice}"
+	verbose "isStale()" "oldPrice=${_oldPrice}" "newPrice=${_newPrice}"
 	_spread=$("source-setzer" spread "$_oldPrice" "$_newPrice")
 	if ! [[ "$_spread" =~ ^([-]?[1-9][0-9]*([.][0-9]+)?|[-]?[.][0-9]*[1-9][0-9]*|[0]{1})$ ]]; then
 		error "Error - Invalid spread ($_spread)"
 		echo false
 		return 1
 	fi
-	log "-> spread = ${_spread#-}"
+	verbose "isStale()" "spread=${_spread#-}"
 	test=$(bc <<< "${_spread#-} >= ${_spreadLimit}")
 	if [[ ${test} -ne 0 ]]; then
-		log "Price is stale, spread is greater than ${_spreadLimit}"
+		verbose "Price is stale, spread is greater than ${_spreadLimit}"
 		echo true
 	else
 		echo false
@@ -135,7 +135,6 @@ isMsgStale () {
 		echo false
 		return 1
 	fi
-	echo >&2 isStale "$_oldPrice" "$_newPrice" "$_spreadLimit"
 	isStale "$_oldPrice" "$_newPrice" "$_spreadLimit"
 }
 
