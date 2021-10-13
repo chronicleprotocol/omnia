@@ -253,9 +253,14 @@ importOptionsEnv () {
 	export OMNIA_MSG_LIMIT
 
 	OMNIA_VERBOSE="$(echo "$_json" | jq -S '.verbose')"
-	OMNIA_VERBOSE=$(echo "$OMNIA_VERBOSE" | tr '[:upper:]' '[:lower:]')
+	OMNIA_VERBOSE="$(echo "$OMNIA_VERBOSE" | tr '[:upper:]' '[:lower:]')"
 	[[ "$OMNIA_VERBOSE" =~ ^(true|false)$ ]] || errors+=("Error - Verbose param is invalid, must be true or false.")
 	export OMNIA_VERBOSE
+
+	OMNIA_LOG_FORMAT="$(echo "$_json" | jq -S '.logFormat')"
+	OMNIA_LOG_FORMAT="$(echo "$OMNIA_LOG_FORMAT" | tr '[:upper:]' '[:lower:]')"
+	[[ "$OMNIA_LOG_FORMAT" =~ ^(text|json)$ ]] || errors+=("Error - LogFormat param is invalid, must be text or json.")
+	export OMNIA_LOG_FORMAT
 
 	if [[ "$OMNIA_MODE" == "FEED" ]]; then
 		OMNIA_SRC_TIMEOUT="$(echo "$_json" | jq -S '.srcTimeout')"
