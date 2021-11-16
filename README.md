@@ -1,6 +1,7 @@
 # Omnia
 
 [![Omnia Unit Tests](https://github.com/chronicleprotocol/omnia/actions/workflows/unit_test.yml/badge.svg)](https://github.com/chronicleprotocol/omnia/actions/workflows/unit_test.yml)
+[![Build & Push Docker Image](https://github.com/chronicleprotocol/omnia/actions/workflows/docker.yml/badge.svg)](https://github.com/chronicleprotocol/omnia/actions/workflows/docker.yml)
 
 For more information see: https://github.com/makerdao/oracles-v2
 
