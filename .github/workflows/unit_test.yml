@@ -1,4 +1,4 @@
-name: Omnia Unit tests
+name: Omnia Unit Tests
 
 on:
   pull_request:
