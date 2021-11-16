@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set - e
-for f in ./units/*.sh;
+for f in "$(cd "${BASH_SOURCE[0]%/*}"; pwd)"/units/*.sh;
 do
   echo "======================================"
   echo "Running: $f"
