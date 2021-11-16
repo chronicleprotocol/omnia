@@ -1,6 +1,6 @@
 #!/bin/bash
 test_path=$(cd "${BASH_SOURCE[0]%/*}"; pwd)
-root_path=$(cd "$test_path/.."; pwd)
+root_path=$(cd "$test_path/../.."; pwd)
 lib_path="$root_path/lib"
 messages_path="$test_path/messages"
 
@@ -11,7 +11,7 @@ messages_path="$test_path/messages"
 . "$lib_path/status.sh"
 . "$lib_path/feed.sh"
 
-. "$root_path/tap.sh" 2>/dev/null || . "$root_path/../tests/lib/tap.sh"
+. "$root_path/tap.sh" 2>/dev/null || . "$root_path/test/tap.sh"
 
 _config="$test_path/configs/oracle-feed-test.conf"
 
@@ -19,8 +19,8 @@ _config="$test_path/configs/oracle-feed-test.conf"
 OMNIA_MODE="FEED"
 OMNIA_SRC_TIMEOUT=60
 ETH_FROM="0x1f8fbe73820765677e68eb6e933dcb3c94c9b708"
-ETH_KEYSTORE="$test_path/../../tests/resources/keys"
-ETH_PASSWORD="$test_path/../../tests/resources/password"
+ETH_KEYSTORE="$test_path/../resources/keys"
+ETH_PASSWORD="$test_path/../resources/password"
 
 importStarkwareEnv
 

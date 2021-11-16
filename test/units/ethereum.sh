@@ -1,6 +1,6 @@
 #!/bin/bash
 test_path=$(cd "${BASH_SOURCE[0]%/*}"; pwd)
-root_path=$(cd "$test_path/.."; pwd)
+root_path=$(cd "$test_path/../.."; pwd)
 lib_path="$root_path/lib"
 
 . "$lib_path/log.sh"
@@ -8,7 +8,7 @@ lib_path="$root_path/lib"
 . "$lib_path/gasprice.sh"
 . "$lib_path/ethereum.sh"
 
-. "$root_path/tap.sh" 2>/dev/null || . "$root_path/../tests/lib/tap.sh"
+. "$root_path/tap.sh" 2>/dev/null || . "$root_path/test/tap.sh"
 
 # Setting up relayer configuration
 OMNIA_MODE="RELAYER"
