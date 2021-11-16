@@ -1,6 +1,6 @@
 #!/bin/bash
 test_path=$(cd "${BASH_SOURCE[0]%/*}"; pwd)
-root_path=$(cd "$test_path/../"; pwd)
+root_path=$(cd "$test_path/../.."; pwd)
 lib_path="$root_path/lib"
 
 . "$lib_path/log.sh"
