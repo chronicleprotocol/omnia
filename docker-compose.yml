@@ -21,12 +21,14 @@ services:
   #     - "./docker/geth/bin/:/root/bin"
   #   command: ["median-deploy", "BATUSD", "BTCUSD", "ETHUSD", "KNCUSD", "MANAUSD", "0x1bb90cde8a032cb4963813a5b4db4981afa5b9c6", "0x3980aa37f838bec2e457445d943feb3af98ff036"]
   # ssb_client:
+  #   depends_on:
+  #     - ssb_server
   #   build:
   #     context: "."
   #     dockerfile: "docker/ssb-server/Dockerfile"
   #   volumes:
   #     - "./docker/ssb-server/config/client.json:/root/.ssb/config"
-  #   command: ["/bin/sh"]
+  #   command: ["/bin/bash"]
   # ssb_server:
   #   container_name: ssb.local
   #   build:
@@ -35,6 +37,7 @@ services:
   #   ports:
   #     - "8008:8008"
   #   volumes:
+  #     # - "./docker/ssb-server/config/:/root/.ssb/"
   #     - "./docker/ssb-server/config/server.json:/root/.ssb/config"
   omnia_feed:
     depends_on:

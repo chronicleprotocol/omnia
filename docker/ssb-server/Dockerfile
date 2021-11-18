@@ -1,5 +1,7 @@
 FROM node:lts-alpine3.14
 
+RUN apk add bash
+
 COPY docker/ssb-server/config/secret /root/.ssb/secret
 COPY docker/ssb-server/config/manifest.json /root/.ssb/manifest.json
 
