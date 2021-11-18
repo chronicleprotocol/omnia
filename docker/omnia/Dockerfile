@@ -1,25 +1,10 @@
-# Building Spire
-FROM golang:1-alpine as spire-builder
-
-RUN apk --no-cache add git gcc libc-dev linux-headers
-WORKDIR /go/src/spire
-RUN git clone -b v0.3.1 https://github.com/makerdao/oracle-suite.git .
-RUN export CGO_ENABLED=1 \
-  && mkdir dist \
-  && go mod download \
-  && go build -o dist/spire ./cmd/spire
-
 # Building final omnia container
 FROM ghcr.io/chronicleprotocol/base:latest
 
-ARG SETZER_BRANCH="v0.4.0"
-
 RUN apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/testing \
-  ca-certificates agrep perl npm datamash parallel py3-pip g++
+  datamash parallel py3-pip
 
 WORKDIR /home/omnia
-
-COPY --from=spire-builder /go/src/spire/dist/ /usr/local/bin/
 
 COPY ./docker/starkware /home/omnia/starkware
 COPY ./bin /home/omnia/bin/
@@ -36,14 +21,6 @@ COPY docker/ssb-server/config/secret /home/omnia/.ssb/secret
 COPY docker/ssb-server/config/manifest.json /home/omnia/.ssb/manifest.json
 COPY docker/ssb-server/config/client.json /home/omnia/.ssb/config
 
-# Installing ssb client only
-RUN npm install -g --no-optional ssb-server
-
-# Installing setzer
-RUN git clone -b ${SETZER_BRANCH} https://github.com/makerdao/setzer-mcd.git \
-  && cp -R setzer-mcd/libexec/setzer/ /home/omnia/setzer \
-  && rm -rf setzer-mcd
-
 # Requirements for starkware
 RUN pip install mpmath sympy ecdsa==0.16.0
 
@@ -57,10 +34,7 @@ RUN printf 'will cite' | parallel --citation; exit 0
 # - /home/omnia/bin - Omnia executables
 # - /home/omnia/exec - Omnia transports executables
 # - /home/omnia/.local/bin - for pip (Python 3) packages required for Starkware
-ENV PATH="/home/omnia/setzer:/home/omnia/starkware:/home/omnia/bin:/home/omnia/exec:/home/omnia/.local/bin:${PATH}"
-
-# Disable 'sodium-native' warning message
-ENV CHLORIDE_JS='1'
+ENV PATH="/home/omnia/starkware:/home/omnia/bin:/home/omnia/exec:/home/omnia/.local/bin:${PATH}"
 
 ENV OMNIA_CONFIG /home/omnia/config/feed.conf
 ENV SPIRE_CONFIG /home/omnia/spire.json

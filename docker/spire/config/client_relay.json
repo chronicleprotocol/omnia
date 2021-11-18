@@ -24,35 +24,11 @@
       "address": "spire_relay.local:9100"
     },
     "pairs": [
-      "AAVEUSD",
-      "AVAXUSD",
-      "BALUSD",
       "BATUSD",
       "BTCUSD",
-      "COMPUSD",
-      "CRVUSD",
-      "DOTUSD",
       "ETHBTC",
-      "ETHUSD",
-      "FILUSD",
       "KNCUSD",
-      "LINKUSD",
-      "LRCUSD",
-      "MANAUSD",
-      "PAXGUSD",
-      "SNXUSD",
-      "SOLUSD",
-      "UNIUSD",
-      "USDTUSD",
-      "WNXMUSD",
-      "XRPUSD",
-      "XTZUSD",
-      "YFIUSD",
-      "ZECUSD",
-      "ZRXUSD",
-      "STETHUSD",
-      "WSTETHUSD",
-      "MATICUSD"
+      "MANAUSD"
     ]
   }
 }

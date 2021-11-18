@@ -8,6 +8,7 @@ List of preinstalled tools:
  - curl 
  - git 
  - nodejs 
+ - npm
  - python3 
  - make 
  - jshon
@@ -16,6 +17,9 @@ List of preinstalled tools:
  - ethsign v0.17.0
  - dapp v0.34.1
  - seth 
+ - setzer v0.3.2
+ - gofer v0.3.2
+ - ssb
 
 ### Prebuilding image locally
 
