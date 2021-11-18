@@ -71,7 +71,7 @@ services:
       - "./test:/home/omnia/test"
       - "./docker/omnia/config/feed.conf:/home/omnia/config/feed.conf"
       - "./docker/spire/config/client_feed.json:/home/omnia/spire.json"
-      - "./docker/ssb-server/config/client.json:/home/omnia/.ssb/config"
+      - "./docker/ssb-server/config/client_feed.json:/home/omnia/.ssb/config"
     environment:
       OMNIA_CONFIG: /home/omnia/config/feed.conf
   omnia_relay:
@@ -84,7 +84,7 @@ services:
       - "./test:/home/omnia/test"
       - "./docker/omnia/config/relay.conf:/home/omnia/config/relay.conf"
       - "./docker/spire/config/client_relay.json:/home/omnia/spire.json"
-      - "./docker/ssb-server/config/client.json:/home/omnia/.ssb/config"
+      - "./docker/ssb-server/config/client_feed.json:/home/omnia/.ssb/config"
     environment:
       OMNIA_CONFIG: /home/omnia/config/relay.conf
   spire_feed:
