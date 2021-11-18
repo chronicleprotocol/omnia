@@ -1,0 +1,16 @@
+{
+  "connections": {
+    "incoming": {
+      "net": [
+        { "scope": "public", "host": "0.0.0.0", "external": "ssb-relayer.local", "transform": "shs", "port": 8009 }
+      ]
+    },
+    "outgoing": {
+      "net": [{ "transform": "shs" }]
+    }
+  },
+  "caps": {
+    "shs": "BRsTikbASMIC6jAvsIbZy24Wd6IpLQ5FbEx1oyooGb8=",
+    "sign": "HOGP1DI4ZybjiHYv7SvaadeSLSnt1MQ2bDo2v7aszh0="
+  }
+}

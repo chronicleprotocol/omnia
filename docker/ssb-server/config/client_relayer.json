@@ -2,7 +2,7 @@
   "connections": {
     "incoming": {
       "net": [
-        { "scope": "public", "host": "0.0.0.0", "external": "ssb.local", "transform": "shs", "port": 8008 }
+        { "scope": "local", "host": "ssb-relayer.local", "transform": "shs", "port": 8009 }
       ]
     },
     "outgoing": {

@@ -20,25 +20,48 @@ services:
   #   volumes:
   #     - "./docker/geth/bin/:/root/bin"
   #   command: ["median-deploy", "BATUSD", "BTCUSD", "ETHUSD", "KNCUSD", "MANAUSD", "0x1bb90cde8a032cb4963813a5b4db4981afa5b9c6", "0x3980aa37f838bec2e457445d943feb3af98ff036"]
-  # ssb_client:
-  #   depends_on:
-  #     - ssb_server
-  #   build:
-  #     context: "."
-  #     dockerfile: "docker/ssb-server/Dockerfile"
-  #   volumes:
-  #     - "./docker/ssb-server/config/client.json:/root/.ssb/config"
-  #   command: ["/bin/bash"]
-  # ssb_server:
-  #   container_name: ssb.local
-  #   build:
-  #     context: "."
-  #     dockerfile: "docker/ssb-server/Dockerfile"
-  #   ports:
-  #     - "8008:8008"
-  #   volumes:
-  #     # - "./docker/ssb-server/config/:/root/.ssb/"
-  #     - "./docker/ssb-server/config/server.json:/root/.ssb/config"
+  ssb_client_feed:
+    depends_on:
+      - ssb_server_feed
+    build:
+      context: "."
+      dockerfile: "docker/ssb-server/Dockerfile"
+    volumes:
+      - "./docker/ssb-server/config/client_feed.json:/root/.ssb/config"
+      - "./docker/ssb-server/config/secret_feed:/root/.ssb/secret"
+    command: ["/bin/bash"]
+  ssb_client_relayer:
+    depends_on:
+      - ssb_server_relayer
+    build:
+      context: "."
+      dockerfile: "docker/ssb-server/Dockerfile"
+    volumes:
+      - "./docker/ssb-server/config/client_relayer.json:/root/.ssb/config"
+      - "./docker/ssb-server/config/secret_relayer:/root/.ssb/secret"
+    command: ["/bin/bash"]
+  ssb_server_feed:
+    container_name: ssb-feed.local
+    build:
+      context: "."
+      dockerfile: "docker/ssb-server/Dockerfile"
+    ports:
+      - "8008:8008"
+    volumes:
+      - "./docker/ssb-server/config/server_feed.json:/root/.ssb/config"
+      - "./docker/ssb-server/config/secret_feed:/root/.ssb/secret"
+  ssb_server_relayer:
+    container_name: ssb-relayer.local
+    build:
+      context: "."
+      dockerfile: "docker/ssb-server/Dockerfile"
+    expose:
+      - 8009
+    ports:
+      - "8009:8009"
+    volumes:
+      - "./docker/ssb-server/config/server_relayer.json:/root/.ssb/config"
+      - "./docker/ssb-server/config/secret_relayer:/root/.ssb/secret"
   omnia_feed:
     depends_on:
       - spire_feed
