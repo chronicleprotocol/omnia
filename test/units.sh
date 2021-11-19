@@ -1,6 +1,6 @@
 #!/bin/bash
+set -e
 
-set - e
 for f in "$(cd "${BASH_SOURCE[0]%/*}"; pwd)"/units/*.sh;
 do
   echo "======================================"
