@@ -1,6 +1,6 @@
 version: '3'
 services:
-  omnia:
+  omnia_unit_tests:
     image: ghcr.io/chronicleprotocol/omnia_dev:latest
     volumes:
       - "../lib:/home/omnia/lib"

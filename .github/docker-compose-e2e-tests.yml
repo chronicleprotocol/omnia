@@ -1,0 +1,16 @@
+version: '3'
+services:
+  omnia_e2e_tests:
+    depends_on:
+      - omnia_feed
+      - omnia_relay
+    image: ghcr.io/chronicleprotocol/omnia_dev:latest
+    volumes:
+      - "./lib:/home/omnia/lib"
+      - "./test:/home/omnia/test"
+      - "./docker/omnia/config/feed.conf:/home/omnia/config/feed.conf"
+      - "./docker/spire/config/client_feed.json:/home/omnia/spire.json"
+      - "./docker/ssb-server/config/client_feed.json:/home/omnia/.ssb/config"
+    environment:
+      OMNIA_CONFIG: /home/omnia/config/feed.conf
+    command: test/e2e.sh

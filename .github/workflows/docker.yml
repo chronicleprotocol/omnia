@@ -3,7 +3,7 @@ name: Build & Push Docker Image
 # and pushes the image to https://hub.docker.com/r/interchainio/simapp/tags
 on:
   workflow_run:
-    workflows: ["Omnia Unit Tests"]
+    workflows: ["Omnia Tests"]
     branches: 
       - master
     types: 
