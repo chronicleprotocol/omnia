@@ -2,11 +2,13 @@
   "connections": {
     "incoming": {
       "net": [
-        { "scope": "public", "host": "0.0.0.0", "external": "ssb-feed.local", "transform": "shs", "port": 8008 }
+        {"port": 8009, "transform": "shs", "scope": "local", "host": "ssb-relay.local"}
+
       ]
     },
     "outgoing": {
       "net": [{ "transform": "shs" }]
+
     }
   },
   "caps": {

@@ -20,51 +20,53 @@ services:
 #   volumes:
 #     - "./docker/geth/bin/:/root/bin"
 #   command: ["median-deploy", "BATUSD", "BTCUSD", "ETHUSD", "KNCUSD", "MANAUSD", "0x1bb90cde8a032cb4963813a5b4db4981afa5b9c6", "0x3980aa37f838bec2e457445d943feb3af98ff036"]
-  ssb_client_feed:
-   depends_on:
-     - ssb_server_feed
-   build:
-     context: "."
-     dockerfile: "docker/ssb-server/Dockerfile"
-   image: ghcr.io/chronicleprotocol/omnia_dev:latest
-   volumes:
-     - "./docker/ssb-server/config/client_feed.json:/root/.ssb/config"
-     - "./docker/ssb-server/config/secret_feed:/root/.ssb/secret"
-   command: ["/bin/bash"]
-  ssb_client_relay:
-   depends_on:
-     - ssb_server_relay
-   build:
-     context: "."
-     dockerfile: "docker/ssb-server/Dockerfile"
-   image: ghcr.io/chronicleprotocol/omnia_dev:latest
-   volumes:
-     - "./docker/ssb-server/config/client_relay.json:/root/.ssb/config"
-     - "./docker/ssb-server/config/secret_relay:/root/.ssb/secret"
-   command: ["/bin/bash"]
+#  ssb_client_feed:
+#   depends_on:
+#     - ssb_server_feed
+#   build:
+#     context: "."
+#     dockerfile: "docker/ssb-server/Dockerfile"
+#   image: ghcr.io/chronicleprotocol/ssb_dev:latest
+#   volumes:
+#     - "./docker/ssb-server/config/config_client_feed.json:/root/.ssb/config"
+#     - "./docker/ssb-server/config/secret_feed:/root/.ssb/secret"
+#   command: ["/bin/bash"]
+#  ssb_client_relay:
+#   depends_on:
+#     - ssb_server_relay
+#   build:
+#     context: "."
+#     dockerfile: "docker/ssb-server/Dockerfile"
+#   image: ghcr.io/chronicleprotocol/ssb_dev:latest
+#   volumes:
+#     - "./docker/ssb-server/config/config_client_relay.json:/root/.ssb/config"
+#     - "./docker/ssb-server/config/secret_relay:/root/.ssb/secret"
+#   command: ["/bin/bash"]
   ssb_server_feed:
    container_name: ssb-feed.local
    build:
      context: "."
      dockerfile: "docker/ssb-server/Dockerfile"
-   image: ghcr.io/chronicleprotocol/omnia_dev:latest
+   image: ghcr.io/chronicleprotocol/ssb_dev:latest
+   expose:
+     - "8008"
    ports:
      - "8008:8008"
    volumes:
-     - "./docker/ssb-server/config/server_feed.json:/root/.ssb/config"
+     - "./docker/ssb-server/config/config_server_feed.json:/root/.ssb/config"
      - "./docker/ssb-server/config/secret_feed:/root/.ssb/secret"
   ssb_server_relay:
    container_name: ssb-relay.local
    build:
      context: "."
      dockerfile: "docker/ssb-server/Dockerfile"
-   image: ghcr.io/chronicleprotocol/omnia_dev:latest
+   image: ghcr.io/chronicleprotocol/ssb_dev:latest
    expose:
-     - 8009
+     - "8009"
    ports:
      - "8009:8009"
    volumes:
-     - "./docker/ssb-server/config/server_relay.json:/root/.ssb/config"
+     - "./docker/ssb-server/config/config_server_relay.json:/root/.ssb/config"
      - "./docker/ssb-server/config/secret_relay:/root/.ssb/secret"
   omnia_feed:
     depends_on:
@@ -75,7 +77,7 @@ services:
       - "./test:/home/omnia/test"
       - "./docker/omnia/config/feed.conf:/home/omnia/config/feed.conf"
       - "./docker/spire/config/client_feed.json:/home/omnia/spire.json"
-      - "./docker/ssb-server/config/client_feed.json:/home/omnia/.ssb/config"
+      - "./docker/ssb-server/config/config_client_feed.json:/home/omnia/.ssb/config"
     environment:
       OMNIA_CONFIG: /home/omnia/config/feed.conf
   omnia_relay:
@@ -88,7 +90,7 @@ services:
       - "./test:/home/omnia/test"
       - "./docker/omnia/config/relay.conf:/home/omnia/config/relay.conf"
       - "./docker/spire/config/client_relay.json:/home/omnia/spire.json"
-      - "./docker/ssb-server/config/client_feed.json:/home/omnia/.ssb/config"
+      - "./docker/ssb-server/config/config_client_feed.json:/home/omnia/.ssb/config"
     environment:
       OMNIA_CONFIG: /home/omnia/config/relay.conf
   spire_feed:

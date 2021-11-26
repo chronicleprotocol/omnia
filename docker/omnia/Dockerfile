@@ -17,9 +17,9 @@ COPY ./version /home/omnia/version
 COPY ./docker/spire/config/client_feed.json /home/omnia/spire.json
 
 # SSB requirements
-#COPY docker/ssb-server/config/secret /home/omnia/.ssb/secret
+COPY docker/ssb-server/config/secret /home/omnia/.ssb/secret
 COPY docker/ssb-server/config/manifest.json /home/omnia/.ssb/manifest.json
-COPY docker/ssb-server/config/client_feed.json /home/omnia/.ssb/config
+COPY docker/ssb-server/config/config.json /home/omnia/.ssb/config
 
 # Requirements for starkware
 RUN pip install mpmath sympy ecdsa==0.16.0

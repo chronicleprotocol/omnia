@@ -1,0 +1,24 @@
+{
+  "connections": {
+    "incoming": {
+      "net": [
+        {"port": 8008, "transform": "shs", "scope": "local", "host": "ssb-feed.local"},
+        {"port": 8008, "transform": "shs", "scope": "public"}
+      ]
+    },
+    "outgoing": {
+      "net": [{ "transform": "shs" }],
+      "onion": [{ "transform": "shs" }]
+    }
+  },
+  "caps": {
+    "shs": "BRsTikbASMIC6jAvsIbZy24Wd6IpLQ5FbEx1oyooGb8=",
+    "sign": "HOGP1DI4ZybjiHYv7SvaadeSLSnt1MQ2bDo2v7aszh0="
+  },
+  "logging":{"level": "info"},
+  "master": [
+    "@YSa2zbx07RNKQrrFX1vS5mFN+Pbnul61hd9GGymao1o=.ed25519",
+    "@KM4CFRlL8LcUMc0OgNNZov7Nz9oKac3HuRY4IeMIkCc=.ed25519",
+    "@go5eQFIWwQng+dN911MDRDHgmN7gZ741wE01e52iTeU=.ed25519"
+  ]
+}
