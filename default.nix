@@ -1,7 +1,17 @@
-{ stdenv, makeWrapper, runCommand, lib, glibcLocales, coreutils, bash, parallel, bc, jq, gnused, datamash, gnugrep, curl
+{ stdenv, makeWrapper, symlinkJoin, lib, glibcLocales, coreutils, bash, parallel, bc, jq, gnused, datamash, gnugrep, curl
 , ethsign, seth, setzer-mcd, stark-cli
 , ssb-server, oracle-suite }:
-
+let
+  oracle-suite=symlinkJoin {
+                   name = "oracle-suite-wrapped";
+                   paths = [ oracle-suite ];
+                   buildInputs = [ makeWrapper ];
+                   postBuild = ''
+                     wrapProgram $out/bin/ssb \
+                       --add-flags "-k"
+                   '';
+                 };
+in
 stdenv.mkDerivation rec {
   name = "omnia-${version}";
   version = lib.fileContents ./version;
@@ -50,10 +60,10 @@ stdenv.mkDerivation rec {
     done
   '';
 
-  meta = with lib; {
+  meta = {
     description = "Omnia is a Feed and Relay Oracle client";
     homepage = "https://github.com/chronicleprotocol/omnia";
-    license = licenses.gpl3;
+    license = lib.licenses.gpl3;
     inherit version;
   };
 }
