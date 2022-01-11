@@ -1,0 +1,97 @@
+#!/usr/bin/env bash
+set -eo pipefail
+if [[ -n $OMNIA_DEBUG ]]; then set -x; fi
+
+_command="$1"
+
+cd "$(cd "${0%/*/*}" && pwd)/lib"
+source ./log.sh
+source ./config.sh
+source ./util.sh
+source ./status.sh
+
+isntStale() {
+	local _latestMsg="$1"
+	local _msg="$2"
+	local _median
+	_median=$(jq -r .price <<<"$_msg")
+	local _assetPair
+	_assetPair=$(jq -r .type <<<"$_msg")
+
+	[[ "$(isEmpty "$_latestMsg")" == "false" \
+	&& "$(isAssetPair "$_assetPair" "$_latestMsg")" == "true" \
+	&& "$(isMsgExpired "$_assetPair" "$_latestMsg")" == "false" \
+	&& "$(isMsgStale "$_assetPair" "$_latestMsg" "$_median")" == "false" \
+	]]
+}
+
+#get id of scuttlebot peer
+getMyId() {
+	ssb-client \
+		--keys "$SSB_KEYS" --caps "$SSB_CONFIG" \
+		--host "$SSB_HOST" --port "$SSB_PORT" \
+		whoami 2> /dev/null | jq -r '.id'
+}
+
+getId() {
+	local _addr="$1"
+	if [[ $_addr =~ ^@ ]]; then
+		echo "$_addr"
+	else
+		jq -er --arg a "$_addr" '.[$a]' <<<"$SSB_ID_MAP"
+	fi
+}
+
+#optimized message search algorithm
+pullLatestFeedMsgOfType() {
+	local _feed;_feed=$(getId "$1")
+	local _assetPair="$2"
+	_assetPair=${_assetPair/\/}
+	_assetPair=${_assetPair^^}
+	ssb-client \
+		--keys "$SSB_KEYS" --caps "$SSB_CONFIG" \
+		--host "$SSB_HOST" --port "$SSB_PORT" \
+		pull --id "$_feed" --type "$_assetPair" --limit "$OMNIA_MSG_LIMIT" \
+	| jq -scM 'max_by(.value.content.time)
+		| {
+			author: .value.author,
+			version: .value.content.version,
+			time: .value.content.time,
+			timeHex: .value.content.timeHex,
+			msgID: .key,
+			previous: .value.previous,
+			type: .value.content.type,
+			price: .value.content.price,
+			priceHex: .value.content.priceHex,
+			signature: .value.content.signature
+		}
+	'
+}
+
+publishMsg() {
+	local _msg="$1"
+	local _assetPair
+	_assetPair=$(jq -r .type <<<"$_msg")
+	local _feedId
+	_feedId=$(getMyId)
+	if isntStale "$(pullLatestFeedMsgOfType "$_feedId" "$_assetPair")" "$_msg"; then
+		log "Not publishing, last message is NOT stale." "transport=ssb-client" "feed=$_feedId" "asset=$_assetPair"
+	else
+		ssb-client \
+		--keys "$SSB_KEYS" --caps "$SSB_CONFIG" \
+		--host "$SSB_HOST" --port "$SSB_PORT" \
+		publish <<<"$_msg" | jq -c .
+	fi
+}
+
+{
+	importMode "$OMNIA_CONFIG"
+	importOptionsEnv "$OMNIA_CONFIG"
+	importAssetPairsEnv "$OMNIA_CONFIG"
+	importServicesEnv "$OMNIA_CONFIG"
+} >&2
+
+case "$_command" in
+	publish) publishMsg "$2";;
+	pull) pullLatestFeedMsgOfType "$2" "$3";;
+esac
