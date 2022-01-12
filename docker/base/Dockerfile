@@ -64,6 +64,16 @@ RUN mkdir gofer_dist \
   && cd .. \
   && rm -rf gofer_dist
   
+# Downloading SSB RPC Client from github releases
+RUN mkdir ssb-rpc-client_dist \
+  && cd ssb-rpc-client_dist \
+  && wget https://github.com/chronicleprotocol/oracle-suite/releases/download/v0.3.2/ssb-rpc-client_0.3.2_linux_arm64.tar.gz \
+  && tar -xvzf ssb-rpc-client_0.3.2_linux_arm64.tar.gz \
+  && cp ssb-rpc-client /usr/local/bin/ \
+  && chmod +x /usr/local/bin/ssb-rpc-client \
+  && cd .. \
+  && rm -rf ssb-rpc-client_dist
+
 # Installing ssb client only
 RUN npm install -g --no-optional ssb-server
 
