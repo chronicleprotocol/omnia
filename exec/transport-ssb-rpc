@@ -27,7 +27,7 @@ isntStale() {
 
 #get id of scuttlebot peer
 getMyId() {
-	ssb-client \
+	ssb-rpc-client \
 		--keys "$SSB_KEYS" --caps "$SSB_CONFIG" \
 		--host "$SSB_HOST" --port "$SSB_PORT" \
 		whoami 2> /dev/null | jq -r '.id'
@@ -48,7 +48,7 @@ pullLatestFeedMsgOfType() {
 	local _assetPair="$2"
 	_assetPair=${_assetPair/\/}
 	_assetPair=${_assetPair^^}
-	ssb-client \
+	ssb-rpc-client \
 		--keys "$SSB_KEYS" --caps "$SSB_CONFIG" \
 		--host "$SSB_HOST" --port "$SSB_PORT" \
 		pull --id "$_feed" --type "$_assetPair" --limit "$OMNIA_MSG_LIMIT" \
@@ -75,9 +75,9 @@ publishMsg() {
 	local _feedId
 	_feedId=$(getMyId)
 	if isntStale "$(pullLatestFeedMsgOfType "$_feedId" "$_assetPair")" "$_msg"; then
-		log "Not publishing, last message is NOT stale." "transport=ssb-client" "feed=$_feedId" "asset=$_assetPair"
+		log "Not publishing, last message is NOT stale." "transport=ssb-rpc-client" "feed=$_feedId" "asset=$_assetPair"
 	else
-		ssb-client \
+		ssb-rpc-client \
 		--keys "$SSB_KEYS" --caps "$SSB_CONFIG" \
 		--host "$SSB_HOST" --port "$SSB_PORT" \
 		publish <<<"$_msg" | jq -c .
