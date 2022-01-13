@@ -11,7 +11,7 @@ messages_path="$test_path/messages"
 . "$lib_path/status.sh"
 . "$lib_path/feed.sh"
 
-. "$root_path/lib/tap.sh" 2>/dev/null || . "$root_path/test/lib/tap.sh"
+. "$root_path/tap.sh" 2>/dev/null || . "$root_path/test/tap.sh"
 
 _config="$test_path/configs/oracle-feed-test.conf"
 

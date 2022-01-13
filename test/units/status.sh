@@ -7,7 +7,7 @@ lib_path="$root_path/lib"
 . "$lib_path/util.sh"
 . "$lib_path/status.sh"
 
-. "$root_path/lib/tap.sh" 2>/dev/null || . "$root_path/test/lib/tap.sh"
+. "$root_path/tap.sh" 2>/dev/null || . "$root_path/test/tap.sh"
 
 declare -gA assetInfo
 assetInfo["BTCUSD"]="1800,0.5"
