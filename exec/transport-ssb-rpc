@@ -48,12 +48,17 @@ pullLatestFeedMsgOfType() {
 	local _assetPair="$2"
 	_assetPair=${_assetPair/\/}
 	_assetPair=${_assetPair^^}
-	ssb-rpc-client \
+	local _msg;
+	_msg=$(ssb-rpc-client \
 		--keys "$SSB_KEYS" --caps "$SSB_CONFIG" \
 		--host "$SSB_HOST" --port "$SSB_PORT" \
-		pull --id "$_feed" --type "$_assetPair" --limit "$OMNIA_MSG_LIMIT" \
-	| jq -scM 'max_by(.value.content.time)
-		| {
+		pull --id "$_feed" --type "$_assetPair" --limit "$OMNIA_MSG_LIMIT")
+	if _msg=$(ssb-rpc-client \
+     		--keys "$SSB_KEYS" --caps "$SSB_CONFIG" \
+     		--host "$SSB_HOST" --port "$SSB_PORT" \
+     		pull --id "$_feed" --type "$_assetPair" --limit "$OMNIA_MSG_LIMIT")
+	then
+		jq -scM 'max_by(.value.content.time) | {
 			author: .value.author,
 			version: .value.content.version,
 			time: .value.content.time,
@@ -64,8 +69,8 @@ pullLatestFeedMsgOfType() {
 			price: .value.content.price,
 			priceHex: .value.content.priceHex,
 			signature: .value.content.signature
-		}
-	'
+		}' <<<"$_msg"
+	fi
 }
 
 publishMsg() {
@@ -77,10 +82,10 @@ publishMsg() {
 	if isntStale "$(pullLatestFeedMsgOfType "$_feedId" "$_assetPair")" "$_msg"; then
 		log "Not publishing, last message is NOT stale." "transport=ssb-rpc-client" "feed=$_feedId" "asset=$_assetPair"
 	else
-	ssb-rpc-client \
-		--keys "$SSB_KEYS" --caps "$SSB_CONFIG" \
-		--host "$SSB_HOST" --port "$SSB_PORT" \
-		publish <<<"$_msg" | jq -c .
+		ssb-rpc-client \
+			--keys "$SSB_KEYS" --caps "$SSB_CONFIG" \
+			--host "$SSB_HOST" --port "$SSB_PORT" \
+			publish <<<"$_msg" | jq -c .
 	fi
 }
 
