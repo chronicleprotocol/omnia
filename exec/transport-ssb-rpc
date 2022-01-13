@@ -79,7 +79,7 @@ publishMsg() {
 		verbose "Not publishing, last message is NOT stale." "transport=ssb-rpc-client" "feed=$_feedId" "asset=$_assetPair"
 	else
 		verbose "Publishing NEW message." "transport=ssb-rpc-client" "feed=$_feedId" "asset=$_assetPair"
-		verbose --raw MSG "$_msg"
+		# note: the client uses args for message content
 		ssb-rpc-client \
 			--keys "$SSB_KEYS" --caps "$SSB_CONFIG" \
 			--host "$SSB_HOST" --port "$SSB_PORT" \
