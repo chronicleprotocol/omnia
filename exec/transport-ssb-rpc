@@ -92,3 +92,5 @@ case "$_command" in
 	publish) publishMsg "$2";;
 	pull) pullLatestFeedMsgOfType "$2" "$3";;
 esac
+
+if [[ -n $SSB_RPC_DEBUG ]]; then set +x; fi
