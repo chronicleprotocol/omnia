@@ -6,7 +6,7 @@ lib_path="$root_path/lib"
 . "$lib_path/log.sh"
 . "$lib_path/transport.sh"
 
-. "$root_path/tap.sh" 2>/dev/null || . "$root_path/test/tap.sh"
+. "$root_path/lib/tap.sh" 2>/dev/null || . "$root_path/test/lib/tap.sh"
 
 # Mock setzer
 transport-mock() {

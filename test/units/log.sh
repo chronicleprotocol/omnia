@@ -4,7 +4,7 @@ root_path=$(cd "$test_path/../.."; pwd)
 lib_path="$root_path/lib"
 
 source "$lib_path/log.sh"
-source "$root_path/tap.sh" 2>/dev/null || . "$root_path/test/tap.sh"
+source "$root_path/lib/tap.sh" 2>/dev/null || . "$root_path/test/lib/tap.sh"
 
 assert "logger requires log level" match "^\[[^]]+\] \[E\] missing log level$" < <(_log 2>&1)
 assert "logger allows only defined levels" match "^\[[^]]+\] \[E\] allowed log levels: error|warning|info|verbose|debug$" < <(_log "test" 2>&1)

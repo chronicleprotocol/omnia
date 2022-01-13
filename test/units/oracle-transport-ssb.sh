@@ -37,7 +37,7 @@ export ETH_FROM="0x1f8fbe73820765677e68eb6e933dcb3c94c9b708"
 export ETH_KEYSTORE="$TEST_PATH/../../tests/resources/keys"
 export ETH_PASSWORD="$TEST_PATH/../../tests/resources/password"
 
-. "$TEST_PATH/../tap.sh" 2>/dev/null || . "$TEST_PATH/../../tests/lib/tap.sh"
+. "$TEST_PATH/../lib/tap.sh" 2>/dev/null || . "$TEST_PATH/../../tests/lib/lib/tap.sh"
 
 currentTime=$(timestamp 0)
 
