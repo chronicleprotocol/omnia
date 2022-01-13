@@ -83,7 +83,7 @@ publishMsg() {
 		ssb-rpc-client \
 			--keys "$SSB_KEYS" --caps "$SSB_CONFIG" \
 			--host "$SSB_HOST" --port "$SSB_PORT" \
-			publish <<<"$_msg" | jq -c .
+			push "$_msg" | jq -c .
 	fi
 }
 
