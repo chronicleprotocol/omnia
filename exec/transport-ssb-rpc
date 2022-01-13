@@ -49,16 +49,12 @@ pullLatestFeedMsgOfType() {
 	_assetPair=${_assetPair/\/}
 	_assetPair=${_assetPair^^}
 	local _msg;
-	_msg=$(ssb-rpc-client \
-		--keys "$SSB_KEYS" --caps "$SSB_CONFIG" \
-		--host "$SSB_HOST" --port "$SSB_PORT" \
-		pull --id "$_feed" --type "$_assetPair" --limit "$OMNIA_MSG_LIMIT")
 	if _msg=$(ssb-rpc-client \
      		--keys "$SSB_KEYS" --caps "$SSB_CONFIG" \
      		--host "$SSB_HOST" --port "$SSB_PORT" \
      		pull --id "$_feed" --type "$_assetPair" --limit "$OMNIA_MSG_LIMIT")
 	then
-		jq -scM 'max_by(.value.content.time) | {
+		jq -cM '{
 			author: .value.author,
 			version: .value.content.version,
 			time: .value.content.time,
