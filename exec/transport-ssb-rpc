@@ -73,6 +73,7 @@ publishMsg() {
 	local _msg="$1"
 	local _feedId;_feedId=$(getMyId)
 	local _assetPair;_assetPair=$(jq -r .type <<<"$_msg")
+	# TODO: move rate limiting (isntStale) to the RPC client - just like spire - for consistency
 	if isntStale "$(pullLatestFeedMsgOfType "$_feedId" "$_assetPair")" "$_msg"
 	then
 		verbose "SKIPPING - last message is NOT stale." "transport=ssb-rpc" "feed=$_feedId" "asset=$_assetPair"
