@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
 set -eo pipefail
-if [[ -n $SSB_RPC_DEBUG ]]; then set -x; fi
-
-_command="$1"
 
 cd "$(cd "${0%/*/*}" && pwd)/lib"
 source ./log.sh
@@ -25,7 +22,6 @@ isntStale() {
 	]]
 }
 
-#get id of scuttlebot peer
 getMyId() {
 	ssb-rpc-client \
 		--keys "$SSB_KEYS" --caps "$SSB_CONFIG" \
@@ -35,51 +31,52 @@ getMyId() {
 
 getId() {
 	local _addr="$1"
-	if [[ $_addr =~ ^@ ]]; then
+	if [[ $_addr =~ ^@ ]]
+	then
 		echo "$_addr"
 	else
 		jq -er --arg a "$_addr" '.[$a]' <<<"$SSB_ID_MAP"
 	fi
 }
 
-#optimized message search algorithm
 pullLatestFeedMsgOfType() {
-	local _feed;_feed=$(getId "$1")
+	local _feedId;_feedId=$(getId "$1")
 	local _assetPair="$2"
 	_assetPair=${_assetPair/\/}
 	_assetPair=${_assetPair^^}
 	local _msg;
 	if _msg=$(ssb-rpc-client \
-     		--keys "$SSB_KEYS" --caps "$SSB_CONFIG" \
-     		--host "$SSB_HOST" --port "$SSB_PORT" \
-     		pull --id "$_feed" --type "$_assetPair" --limit "$OMNIA_MSG_LIMIT")
+		--keys "$SSB_KEYS" --caps "$SSB_CONFIG" \
+		--host "$SSB_HOST" --port "$SSB_PORT" \
+		pull --id "$_feedId" --type "$_assetPair" --limit "$OMNIA_MSG_LIMIT")
 	then
-		jq -cM '{
-			author: .value.author,
-			version: .value.content.version,
-			time: .value.content.time,
-			timeHex: .value.content.timeHex,
-			msgID: .key,
-			previous: .value.previous,
-			type: .value.content.type,
-			price: .value.content.price,
-			priceHex: .value.content.priceHex,
-			signature: .value.content.signature
-		}' <<<"$_msg"
+		jq -cM '
+			{
+				author: .value.author,
+				version: .value.content.version,
+				time: .value.content.time,
+				timeHex: .value.content.timeHex,
+				msgID: .key,
+				previous: .value.previous,
+				type: .value.content.type,
+				price: .value.content.price,
+				priceHex: .value.content.priceHex,
+				signature: .value.content.signature
+			}' <<<"$_msg"
+	else
+		error "Message receiving failed" "transport=ssb-rpc" "feed=$_feedId" "asset=$_assetPair"
+		exit 1
 	fi
 }
 
 publishMsg() {
 	local _msg="$1"
-	local _assetPair
-	_assetPair=$(jq -r .type <<<"$_msg")
-	local _feedId
-	_feedId=$(getMyId)
-	if isntStale "$(pullLatestFeedMsgOfType "$_feedId" "$_assetPair")" "$_msg"; then
-		verbose "Not publishing, last message is NOT stale." "transport=ssb-rpc-client" "feed=$_feedId" "asset=$_assetPair"
+	local _feedId;_feedId=$(getMyId)
+	local _assetPair;_assetPair=$(jq -r .type <<<"$_msg")
+	if isntStale "$(pullLatestFeedMsgOfType "$_feedId" "$_assetPair")" "$_msg"
+	then
+		verbose "SKIPPING - last message is NOT stale." "transport=ssb-rpc" "feed=$_feedId" "asset=$_assetPair"
 	else
-		verbose "Publishing NEW message." "transport=ssb-rpc-client" "feed=$_feedId" "asset=$_assetPair"
-		# note: the client uses args for message content
 		ssb-rpc-client \
 			--keys "$SSB_KEYS" --caps "$SSB_CONFIG" \
 			--host "$SSB_HOST" --port "$SSB_PORT" \
@@ -94,9 +91,7 @@ publishMsg() {
 	importServicesEnv "$OMNIA_CONFIG"
 } >&2
 
-case "$_command" in
-	publish) publishMsg "$2";;
+case "$1" in
+	push) publishMsg "$2";;
 	pull) pullLatestFeedMsgOfType "$2" "$3";;
 esac
-
-if [[ -n $SSB_RPC_DEBUG ]]; then set +x; fi

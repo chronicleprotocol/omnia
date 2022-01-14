@@ -26,11 +26,10 @@ transportPull() {
 
 	for _puller in "${OMNIA_TRANSPORTS[@]}"; do
 		log "Pulling $_assetPair price message with $_puller"
-
-		_msg=$(OMNIA_CONFIG="$OMNIA_CONFIG" "$_puller" pull "$_feed" "$_assetPair" | jq -c)
-
-		if [[ -n $_msg ]]; then
+		if _msg=$("$_puller" pull "$_feed" "$_assetPair" | jq -c)
+		then
 			_msgs["$_puller"]="$_msg"
+			verbose "Received message" "asset=$_assetPair" "transport=$_publisher"
 		else
 			error "Failed pulling $_assetPair price from feed $_feed with $_puller"
 		fi
