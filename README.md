@@ -31,7 +31,7 @@ To run `omnia` in container from prev command you can use `omnia` command:
 
 ```bash
 $ omnia
-Importing configuration from /home/omnia/config/feed.conf...
+Importing configuration from /home/omnia/config/feed.json...
 ```
 
 ## SSB Image requirements

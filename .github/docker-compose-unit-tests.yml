@@ -5,9 +5,9 @@ services:
     volumes:
       - "../lib:/home/omnia/lib"
       - "../test:/home/omnia/test"
-      - "../docker/omnia/config/feed.conf:/home/omnia/config/feed.conf"
+      - "../docker/omnia/config/feed.json:/home/omnia/config.json"
       - "../docker/spire/config/client_feed.json:/home/omnia/spire.json"
       - "../docker/ssb-server/config/config_client_feed.json:/home/omnia/.ssb/config"
     environment:
-      OMNIA_CONFIG: /home/omnia/config/feed.conf
+      OMNIA_CONFIG: /home/omnia/config.json
     command: test/units.sh

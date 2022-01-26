@@ -6,15 +6,16 @@ RUN apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/testing \
 
 WORKDIR /home/omnia
 
-COPY ./docker/starkware /home/omnia/starkware
 COPY ./bin /home/omnia/bin/
 COPY ./exec /home/omnia/exec/
 COPY ./lib /home/omnia/lib/
-COPY ./docker/keystore/ /home/omnia/keystore/
-COPY ./docker/omnia/config/ /home/omnia/config/
 COPY ./version /home/omnia/version
-# Copy Spire configuration
-COPY ./docker/spire/config/client_feed.json /home/omnia/spire.json
+
+COPY ./docker/starkware/ /home/omnia/starkware/
+COPY ./docker/keystore/ /home/omnia/keystore/
+
+ENV OMNIA_CONFIG /home/omnia/config.json
+COPY ./docker/omnia/config/feed.json /home/omnia/config.json
 
 # SSB requirements
 COPY docker/ssb-server/config/secret /home/omnia/.ssb/secret
@@ -36,7 +37,6 @@ RUN printf 'will cite' | parallel --citation; exit 0
 # - /home/omnia/.local/bin - for pip (Python 3) packages required for Starkware
 ENV PATH="/home/omnia/starkware:/home/omnia/bin:/home/omnia/exec:/home/omnia/.local/bin:${PATH}"
 
-ENV OMNIA_CONFIG /home/omnia/config/feed.conf
 ENV SPIRE_CONFIG /home/omnia/spire.json
 
 # Setting up seth

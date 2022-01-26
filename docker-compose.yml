@@ -13,6 +13,7 @@ services:
       - "./docker/geth/config:/home/geth/config"
       - "./docker/keystore:/home/geth/keystore"
     command: --datadir /home/geth/data --keystore /home/geth/keystore --networkid 99 --allow-insecure-unlock --unlock 0x1bb90cde8a032cb4963813a5b4db4981afa5b9c6,0xfadad77b3a7e5a84a1f7ded081e785585d4ffaf3,0x3980aa37f838bec2e457445d943feb3af98ff036 --networkid 99 --lightkdf --nodiscover --maxpeers=0 --port=0 --nousb --ipcdisable --mine --miner.threads 1 --miner.etherbase 0x1bb90cde8a032cb4963813a5b4db4981afa5b9c6 --http --http.port 8545 --http.api admin,personal,eth,miner,debug,txpool,net,web3 --http.addr 0.0.0.0 --http.corsdomain * --http.vhosts * --rpc.allow-unprotected-txs --password=/home/geth/keystore/password
+
 #  deployer:
 #   build:
 #     context: "."
@@ -20,28 +21,7 @@ services:
 #   volumes:
 #     - "./docker/geth/bin/:/root/bin"
 #   command: ["median-deploy", "BATUSD", "BTCUSD", "ETHUSD", "KNCUSD", "MANAUSD", "0x1bb90cde8a032cb4963813a5b4db4981afa5b9c6", "0x3980aa37f838bec2e457445d943feb3af98ff036"]
-#  ssb_client_feed:
-#   depends_on:
-#     - ssb_server_feed
-#   build:
-#     context: "."
-#     dockerfile: "docker/ssb-server/Dockerfile"
-#   image: ghcr.io/chronicleprotocol/ssb_dev:latest
-#   volumes:
-#     - "./docker/ssb-server/config/config_client_feed.json:/root/.ssb/config"
-#     - "./docker/ssb-server/config/secret_feed:/root/.ssb/secret"
-#   command: ["/bin/bash"]
-#  ssb_client_relay:
-#   depends_on:
-#     - ssb_server_relay
-#   build:
-#     context: "."
-#     dockerfile: "docker/ssb-server/Dockerfile"
-#   image: ghcr.io/chronicleprotocol/ssb_dev:latest
-#   volumes:
-#     - "./docker/ssb-server/config/config_client_relay.json:/root/.ssb/config"
-#     - "./docker/ssb-server/config/secret_relay:/root/.ssb/secret"
-#   command: ["/bin/bash"]
+
   ssb_server_feed:
    container_name: ssb-feed.local
    build:
@@ -53,8 +33,9 @@ services:
    ports:
      - "8008:8008"
    volumes:
-     - "./docker/ssb-server/config/config_server_feed.json:/root/.ssb/config"
-     - "./docker/ssb-server/config/secret_feed:/root/.ssb/secret"
+     - "./docker/ssb-server/config/feed_config.json:/root/.ssb/config"
+     - "./docker/ssb-server/config/feed_secret:/root/.ssb/secret"
+
   ssb_server_relay:
    container_name: ssb-relay.local
    build:
@@ -66,33 +47,9 @@ services:
    ports:
      - "8009:8009"
    volumes:
-     - "./docker/ssb-server/config/config_server_relay.json:/root/.ssb/config"
-     - "./docker/ssb-server/config/secret_relay:/root/.ssb/secret"
-  omnia_feed:
-    depends_on:
-      - spire_feed
-    image: ghcr.io/chronicleprotocol/omnia_dev:latest
-    volumes:
-      - "./lib:/home/omnia/lib"
-      - "./test:/home/omnia/test"
-      - "./docker/omnia/config/feed.conf:/home/omnia/config/feed.conf"
-      - "./docker/spire/config/client_feed.json:/home/omnia/spire.json"
-      - "./docker/ssb-server/config/config_client_feed.json:/home/omnia/.ssb/config"
-    environment:
-      OMNIA_CONFIG: /home/omnia/config/feed.conf
-  omnia_relay:
-    depends_on:
-      - spire_relay
-      - geth
-    image: ghcr.io/chronicleprotocol/omnia_dev:latest
-    volumes:
-      - "./lib:/home/omnia/lib"
-      - "./test:/home/omnia/test"
-      - "./docker/omnia/config/relay.conf:/home/omnia/config/relay.conf"
-      - "./docker/spire/config/client_relay.json:/home/omnia/spire.json"
-      - "./docker/ssb-server/config/config_client_feed.json:/home/omnia/.ssb/config"
-    environment:
-      OMNIA_CONFIG: /home/omnia/config/relay.conf
+     - "./docker/ssb-server/config/relay_config.json:/root/.ssb/config"
+     - "./docker/ssb-server/config/relay_secret:/root/.ssb/secret"
+
   spire_feed:
     image: ghcr.io/chronicleprotocol/spire:latest
     container_name: spire_feed.local
@@ -104,6 +61,7 @@ services:
     volumes:
       - "./docker/keystore:/root/keystore"
       - "./docker/spire/config/agent_feed.json:/root/spire.json"
+
   spire_relay:
     image: ghcr.io/chronicleprotocol/spire:latest
     container_name: spire_relay.local
@@ -115,3 +73,39 @@ services:
     volumes:
       - "./docker/keystore:/root/keystore"
       - "./docker/spire/config/agent_relay.json:/root/spire.json"
+
+  omnia_feed:
+    depends_on:
+      - spire_feed
+#    image: ghcr.io/chronicleprotocol/omnia_dev:latest
+    build:
+      context: .
+      dockerfile: ./docker/omnia/Dockerfile
+    volumes:
+      - "./lib:/home/omnia/lib"
+      - "./test:/home/omnia/test"
+      - "./docker/omnia/config/feed.json:/home/omnia/config.json"
+      - "./docker/spire/config/client_feed.json:/home/omnia/spire.json"
+      - "./docker/ssb-server/config/feed_config.json:/home/omnia/.ssb/config"
+      - "./docker/ssb-server/config/feed_secret:/home/omnia/.ssb/secret"
+    environment:
+      OMNIA_CONFIG: /home/omnia/config.json
+      SPIRE_CONFIG: /home/omnia/spire.json
+    entrypoint: ["/bin/bash"]
+    command: ["omnia"]
+
+  omnia_relay:
+    depends_on:
+      - spire_relay
+      - geth
+    image: ghcr.io/chronicleprotocol/omnia_dev:latest
+    volumes:
+      - "./lib:/home/omnia/lib"
+      - "./test:/home/omnia/test"
+      - "./docker/omnia/config/relay.json:/home/omnia/config.conf"
+      - "./docker/spire/config/client_relay.json:/home/omnia/spire.json"
+      - "./docker/ssb-server/config/relay_config.json:/home/omnia/.ssb/config"
+      - "./docker/ssb-server/config/relay_secret:/home/omnia/.ssb/secret"
+    environment:
+      OMNIA_CONFIG: /home/omnia/config.conf
+      SPIRE_CONFIG: /home/omnia/spire.json

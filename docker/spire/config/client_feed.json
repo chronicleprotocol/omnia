@@ -1,34 +1,7 @@
 {
-  "ethereum": {
-    "from": "0xfadad77b3a7e5a84a1f7ded081e785585d4ffaf3",
-    "keystore": "/home/omnia/keystore",
-    "password": "/home/omnia/keystore/password"
-  },
-  "transport": {
-    "p2p": {
-      "privKeySeed": "",
-      "listenAddrs": ["/ip4/0.0.0.0/tcp/8000"],
-      "bootstrapAddrs": [],
-      "directPeersAddrs": [],
-      "blockedAddrs": [],
-      "disableDiscovery": false
-    }
-  },
-  "feeds": [
-    "0x1bb90cde8a032cb4963813a5b4db4981afa5b9c6",
-    "0xfadad77b3a7e5a84a1f7ded081e785585d4ffaf3",
-    "0x3980aa37f838bec2e457445d943feb3af98ff036"
-  ],
   "spire": {
     "rpc": {
       "address": "spire_feed.local:9100"
-    },
-    "pairs": [
-      "BATUSD",
-      "BTCUSD",
-      "ETHBTC",
-      "KNCUSD",
-      "MANAUSD"
-    ]
+    }
   }
 }
