@@ -16,7 +16,7 @@
     "verbose": true
   },
   "sources":["gofer","setzer"],
-  "transports":["transport-spire", "transport-ssb"],
+  "transports":["transport-spire","transport-ssb-rpc"],
   "pairs": {
     "BAT/USD":{"msgExpiration":1800,"msgSpread":0.5},
     "BTC/USD":{"msgExpiration":1800,"msgSpread":0.5},
