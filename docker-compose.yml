@@ -24,10 +24,10 @@ services:
 
   ssb_server_feed:
    container_name: ssb-feed.local
+   image: ghcr.io/chronicleprotocol/ssb_dev:latest
    build:
      context: "."
      dockerfile: "docker/ssb-server/Dockerfile"
-   image: ghcr.io/chronicleprotocol/ssb_dev:latest
    expose:
      - "8008"
    ports:
@@ -38,10 +38,10 @@ services:
 
   ssb_server_relay:
    container_name: ssb-relay.local
+   image: ghcr.io/chronicleprotocol/ssb_dev:latest
    build:
      context: "."
      dockerfile: "docker/ssb-server/Dockerfile"
-   image: ghcr.io/chronicleprotocol/ssb_dev:latest
    expose:
      - "8009"
    ports:
@@ -78,6 +78,9 @@ services:
     depends_on:
       - spire_feed
     image: ghcr.io/chronicleprotocol/omnia_dev:latest
+    build:
+      context: "."
+      dockerfile: "docker/omnia/Dockerfile"
     volumes:
       - "./lib:/home/omnia/lib"
       - "./test:/home/omnia/test"
@@ -88,14 +91,19 @@ services:
     environment:
       OMNIA_CONFIG: /home/omnia/config.json
       SPIRE_CONFIG: /home/omnia/spire.json
-#    entrypoint: ["/bin/bash"]
-#    command: ["omnia"]
+      SSB_KEYS: /home/omnia/.ssb/secret
+      SSB_CONF: /home/omnia/.ssb/config
+      SSB_HOST: ssb-feed.local
+      SSB_PORT: 8008
 
   omnia_relay:
     depends_on:
       - spire_relay
       - geth
     image: ghcr.io/chronicleprotocol/omnia_dev:latest
+    build:
+      context: "."
+      dockerfile: "docker/omnia/Dockerfile"
     volumes:
       - "./lib:/home/omnia/lib"
       - "./test:/home/omnia/test"
@@ -106,3 +114,7 @@ services:
     environment:
       OMNIA_CONFIG: /home/omnia/config.conf
       SPIRE_CONFIG: /home/omnia/spire.json
+      SSB_KEYS: /home/omnia/.ssb/secret
+      SSB_CONF: /home/omnia/.ssb/config
+      SSB_HOST: ssb-relay.local
+      SSB_PORT: 8009

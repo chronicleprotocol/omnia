@@ -1,9 +1,6 @@
 # Building final omnia container
 FROM ghcr.io/chronicleprotocol/base:latest
 
-RUN apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/testing \
-  datamash parallel py3-pip
-
 WORKDIR /home/omnia
 
 COPY ./bin /home/omnia/bin/
@@ -23,7 +20,14 @@ COPY docker/ssb-server/config/manifest.json /home/omnia/.ssb/manifest.json
 COPY docker/ssb-server/config/config.json /home/omnia/.ssb/config
 
 # Requirements for starkware
-RUN pip install mpmath sympy ecdsa==0.16.0
+RUN apk add --update --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/testing datamash
+RUN apk add --update parallel
+
+
+RUN pip install --no-cache-dir mpmath sympy ecdsa==0.16.0
+
+ARG USER=1000
+USER ${USER}
 
 # Disabling parallel notification
 RUN printf 'will cite' | parallel --citation; exit 0

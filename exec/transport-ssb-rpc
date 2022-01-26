@@ -24,7 +24,7 @@ isntStale() {
 
 getMyId() {
 	ssb-rpc-client \
-		--keys "$SSB_KEYS" --caps "$SSB_CONFIG" \
+		--keys "$SSB_KEYS" --caps "$SSB_CONF" \
 		--host "$SSB_HOST" --port "$SSB_PORT" \
 		whoami 2> /dev/null | jq -r '.id'
 }
@@ -46,7 +46,7 @@ pullLatestFeedMsgOfType() {
 	_assetPair=${_assetPair^^}
 	local _msg;
 	if _msg=$(ssb-rpc-client \
-		--keys "$SSB_KEYS" --caps "$SSB_CONFIG" \
+		--keys "$SSB_KEYS" --caps "$SSB_CONF" \
 		--host "$SSB_HOST" --port "$SSB_PORT" \
 		pull --id "$_feedId" --type "$_assetPair" --limit "$OMNIA_MSG_LIMIT")
 	then
@@ -79,7 +79,7 @@ publishMsg() {
 		verbose "SKIPPING - last message is NOT stale." "transport=ssb-rpc" "feed=$_feedId" "asset=$_assetPair"
 	else
 		ssb-rpc-client \
-			--keys "$SSB_KEYS" --caps "$SSB_CONFIG" \
+			--keys "$SSB_KEYS" --caps "$SSB_CONF" \
 			--host "$SSB_HOST" --port "$SSB_PORT" \
 			push "$_msg" | jq -c .
 	fi

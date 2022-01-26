@@ -17,7 +17,7 @@ RUN export CGO_ENABLED=0 \
   && go build -o ../../dist/ethsign ./ethsign.go
 
 # Final image
-FROM alpine:edge
+FROM python:3.10.2-alpine3.15
 
 ARG DAPP_BRANCH="dapp/0.34.1"
 ARG SETZER_BRANCH="v0.4.0"
@@ -26,7 +26,7 @@ ARG SETZER_BRANCH="v0.4.0"
 ENV CHLORIDE_JS='1'
 
 RUN apk add --no-cache -X https://dl-cdn.alpinelinux.org/alpine/edge/testing \
-  bash jq curl git nodejs npm python3 make jshon perl agrep g++ ca-certificates
+  bash jq curl git nodejs npm make jshon perl agrep g++ ca-certificates
 
 # Downloading dapp
 RUN git clone -b ${DAPP_BRANCH} https://github.com/dapphub/dapptools.git \
