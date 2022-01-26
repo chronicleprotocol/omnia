@@ -88,8 +88,8 @@ services:
     environment:
       OMNIA_CONFIG: /home/omnia/config.json
       SPIRE_CONFIG: /home/omnia/spire.json
-    entrypoint: ["/bin/bash"]
-    command: ["omnia"]
+#    entrypoint: ["/bin/bash"]
+#    command: ["omnia"]
 
   omnia_relay:
     depends_on:

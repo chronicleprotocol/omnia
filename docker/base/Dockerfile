@@ -44,7 +44,7 @@ COPY --from=ethsign-builder /go/src/ethsign/dist/ /usr/local/bin/
 COPY ./docker/geth/bin/hevm-0.48.1 /usr/local/bin/hevm
 COPY ./docker/geth/bin/solc-0.5.12 /usr/local/bin/solc
 
-ARG ORACLE_SUITE_VERSION="0.3.3"
+ARG ORACLE_SUITE_VERSION="0.3.5"
 
 # Downloading Spire from github releases
 RUN mkdir spire_dist \
@@ -75,9 +75,6 @@ RUN mkdir ssb-rpc-client_dist \
   && chmod +x /usr/local/bin/ssb-rpc-client \
   && cd .. \
   && rm -rf ssb-rpc-client_dist
-
-# Installing ssb client only
-RUN npm install -g --no-optional ssb-server
 
 ENV PATH="/root/dapp/libexec/dapp:/root/seth:/root/setzer:${PATH}"
 
