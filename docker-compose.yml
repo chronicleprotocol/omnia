@@ -77,10 +77,7 @@ services:
   omnia_feed:
     depends_on:
       - spire_feed
-#    image: ghcr.io/chronicleprotocol/omnia_dev:latest
-    build:
-      context: .
-      dockerfile: ./docker/omnia/Dockerfile
+    image: ghcr.io/chronicleprotocol/omnia_dev:latest
     volumes:
       - "./lib:/home/omnia/lib"
       - "./test:/home/omnia/test"

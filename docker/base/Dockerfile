@@ -44,7 +44,7 @@ COPY --from=ethsign-builder /go/src/ethsign/dist/ /usr/local/bin/
 COPY ./docker/geth/bin/hevm-0.48.1 /usr/local/bin/hevm
 COPY ./docker/geth/bin/solc-0.5.12 /usr/local/bin/solc
 
-ARG ORACLE_SUITE_VERSION="0.3.2"
+ARG ORACLE_SUITE_VERSION="0.3.3"
 
 # Downloading Spire from github releases
 RUN mkdir spire_dist \
