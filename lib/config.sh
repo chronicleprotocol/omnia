@@ -1,5 +1,5 @@
 importEnv () {
-	local _here=$(cd "${BASH_SOURCE[0]%/*}" && pwd)
+	local _here;_here=$(cd "${BASH_SOURCE[0]%/*}" && pwd)
 	local config
 	if [[ -f "$OMNIA_CONFIG" ]]; then
 		config="$OMNIA_CONFIG"
@@ -126,16 +126,6 @@ importEthereumEnv () {
 	[[ "$OMNIA_MODE" == "RELAYER" || "$OMNIA_MODE" == "RELAY" ]] && importGasPrice "$_json"
 
 	[[ -z ${errors[*]} ]] || { printf '%s\n' "${errors[@]}"; exit 1; }
-}
-
-#sign message
-signMessage () {
-	local _data
-	for arg in "$@"; do
-		_data+="$arg"
-	done
-	verbose "Signing message..."
-	ethsign message --from "$ETH_FROM" --key-store "$ETH_KEYSTORE" --passphrase-file "$ETH_PASSWORD" --data "$_data"
 }
 
 importStarkwareEnv() {

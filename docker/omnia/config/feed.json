@@ -2,8 +2,8 @@
   "mode": "feed",
   "ethereum": {
     "from": "0xfadad77b3a7e5a84a1f7ded081e785585d4ffaf3",
-    "keystore": "/home/omnia/keystore",
-    "password": "/home/omnia/keystore/password"
+    "keystore": "/home/omnia/.ethereum/keystore",
+    "password": "/home/omnia/.ethereum/keystore/password"
   },
   "options": {
     "interval": 60,

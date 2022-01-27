@@ -1,0 +1,7 @@
+{
+  "gofer": {
+    "rpc": {
+      "address": "gofer.local:9200"
+    }
+  }
+}

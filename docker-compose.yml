@@ -50,17 +50,28 @@ services:
      - "./docker/ssb-server/config/relay_config.json:/root/.ssb/config"
      - "./docker/ssb-server/config/relay_secret:/root/.ssb/secret"
 
+  gofer:
+    image: ghcr.io/chronicleprotocol/oracle-suite:dev
+    build:
+      context: /home/box/maker/oracle-suite
+    ports:
+      - "9200:9200"
+    entrypoint: ["/usr/local/bin/gofer"]
+    command: ["-c", "/etc/gofer.json", "agent"]
+    volumes:
+      - "./docker/gofer/agent.json:/etc/gofer.json"
+
   spire_feed:
     image: ghcr.io/chronicleprotocol/spire:latest
     container_name: spire_feed.local
     expose:
       - "8000"
     ports:
-      - "9100:9100"
-    command: ["-c", "/root/spire.json", "agent"]
+      - "9101:9100"
+    command: ["-c", "/etc/spire.json", "agent"]
     volumes:
       - "./docker/keystore:/root/keystore"
-      - "./docker/spire/config/agent_feed.json:/root/spire.json"
+      - "./docker/spire/config/agent_feed.json:/etc/spire.json"
 
   spire_relay:
     image: ghcr.io/chronicleprotocol/spire:latest
@@ -68,29 +79,31 @@ services:
     expose:
       - "8000"
     ports:
-      - "9101:9100"
-    command: ["-c", "/root/spire.json", "agent"]
+      - "9102:9100"
+    command: ["-c", "/etc/spire.json", "agent"]
     volumes:
       - "./docker/keystore:/root/keystore"
-      - "./docker/spire/config/agent_relay.json:/root/spire.json"
+      - "./docker/spire/config/agent_relay.json:/etc/spire.json"
 
   omnia_feed:
     depends_on:
+      - gofer
       - spire_feed
+      - ssb_server_feed
     image: ghcr.io/chronicleprotocol/omnia_dev:latest
     build:
       context: "."
-      dockerfile: "docker/omnia/Dockerfile"
     volumes:
-      - "./lib:/home/omnia/lib"
-      - "./test:/home/omnia/test"
-      - "./docker/omnia/config/feed.json:/home/omnia/config.json"
-      - "./docker/spire/config/client_feed.json:/home/omnia/spire.json"
-      - "./docker/ssb-server/config/feed_config.json:/home/omnia/.ssb/config"
-      - "./docker/ssb-server/config/feed_secret:/home/omnia/.ssb/secret"
+      - "./bin:/opt/omnia/bin"
+      - "./lib:/opt/omnia/lib"
+      - "./exec:/opt/omnia/exec"
+      - "./test:/opt/omnia/test"
+      - "./docker/omnia/config/feed.json:/home/omnia/omnia.json"
+#      - "./docker/spire/config/client_feed.json:/home/omnia/spire.json"
+#      - "./docker/ssb-server/config/feed_config.json:/home/omnia/.ssb/config"
+#      - "./docker/ssb-server/config/feed_secret:/home/omnia/.ssb/secret"
+      - "/home/box/maker/dapptools/src/seth/libexec/seth/seth:/opt/seth/libexec/seth/seth"
     environment:
-      OMNIA_CONFIG: /home/omnia/config.json
-      SPIRE_CONFIG: /home/omnia/spire.json
       SSB_KEYS: /home/omnia/.ssb/secret
       SSB_CONF: /home/omnia/.ssb/config
       SSB_HOST: ssb-feed.local
@@ -103,7 +116,6 @@ services:
     image: ghcr.io/chronicleprotocol/omnia_dev:latest
     build:
       context: "."
-      dockerfile: "docker/omnia/Dockerfile"
     volumes:
       - "./lib:/home/omnia/lib"
       - "./test:/home/omnia/test"

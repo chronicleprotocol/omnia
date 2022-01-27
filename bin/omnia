@@ -2,7 +2,7 @@
 set -e
 
 if [[ -n $OMNIA_DEBUG ]]; then
-	env
+	env | sort
 	set -x
 fi
 

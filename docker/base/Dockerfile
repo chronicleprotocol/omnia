@@ -1,13 +1,12 @@
-# ethsign build stage
-FROM golang:1-alpine as ethsign-builder
+FROM golang:1.17-alpine3.15 as go-builder
 
-ARG ETH_SIGN_BRANCH="ethsign/0.17.0"
+ARG DAPP_BRANCH="dapp/0.34.1"
 
 RUN apk --no-cache add git
 
 WORKDIR /go/src/ethsign
 
-RUN git clone -b ${ETH_SIGN_BRANCH} https://github.com/dapphub/dapptools.git .
+RUN git clone -b ${DAPP_BRANCH} https://github.com/dapphub/dapptools.git .
 
 RUN export CGO_ENABLED=0 \
   && mkdir dist \
@@ -16,27 +15,26 @@ RUN export CGO_ENABLED=0 \
   && go mod download \
   && go build -o ../../dist/ethsign ./ethsign.go
 
-# Final image
 FROM python:3.10.2-alpine3.15
 
-ARG DAPP_BRANCH="dapp/0.34.1"
 ARG SETZER_BRANCH="v0.4.0"
 
-# Disable 'sodium-native' warning message
-ENV CHLORIDE_JS='1'
-
+RUN apk add --no-cache \
+  bash jq curl git make perl g++ ca-certificates
 RUN apk add --no-cache -X https://dl-cdn.alpinelinux.org/alpine/edge/testing \
-  bash jq curl git nodejs npm make jshon perl agrep g++ ca-certificates
+  jshon agrep
+
+ARG DAPP_BRANCH="dapp/0.34.1"
 
 # Downloading dapp
 RUN git clone -b ${DAPP_BRANCH} https://github.com/dapphub/dapptools.git \
-  && cp -R dapptools/src/dapp/ /root/dapp \
-  && cp -R dapptools/src/seth/libexec/seth /root/seth \
+  && cp -R dapptools/src/dapp/ /opt/dapp \
+  && cp -R dapptools/src/seth/libexec/seth /opt/seth \
   && rm -rf dapptools
 
 # Installing setzer
 RUN git clone -b ${SETZER_BRANCH} https://github.com/makerdao/setzer-mcd.git \
-  && cp -R setzer-mcd/libexec/setzer/ /root/setzer \
+  && cp -R setzer-mcd/libexec/setzer/ /opt/setzer \
   && rm -rf setzer-mcd
 
 COPY --from=ethsign-builder /go/src/ethsign/dist/ /usr/local/bin/
@@ -76,6 +74,6 @@ RUN mkdir ssb-rpc-client_dist \
   && cd .. \
   && rm -rf ssb-rpc-client_dist
 
-ENV PATH="/root/dapp/libexec/dapp:/root/seth:/root/setzer:${PATH}"
+ENV PATH="/opt/dapp/libexec/dapp:/opt/seth:/opt/setzer:${PATH}"
 
 CMD ["/bin/bash"]
