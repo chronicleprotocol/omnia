@@ -47,21 +47,28 @@ readSourcesWithSetzer()  {
 }
 
 readSourcesWithGofer()   {
-	local _output
-	_output="$(jq -c '
-		.[]
-		| {
-			asset: (.base+"/"+.quote),
-			median: .price,
-			sources: (
-				[ ..
-				| select(type == "object" and .type == "origin" and .error == null)
-				| {(.base+"/"+.quote+"@"+.params.origin): (.price|tostring)}
-				]
-				| add
-			)
-		}
-	' <<<"$(gofer price --config "$GOFER_CONFIG" --format json "$@")")"
+	local _data;
+	if _data=$(gofer price --config "$GOFER_CONFIG" --format json "$@")
+	then
+		local _output
+		_output="$(jq -c '
+			.[]
+			| {
+				asset: (.base+"/"+.quote),
+				median: .price,
+				sources: (
+					[ ..
+					| select(type == "object" and .type == "origin" and .error == null)
+					| {(.base+"/"+.quote+"@"+.params.origin): (.price|tostring)}
+					]
+					| add
+				)
+			}
+		' <<<"$_data")"
+	else
+		error --list "Failed getting prices from gofer" "config=$GOFER_CONFIG" "$@"
+		return
+	fi
 
 	verbose --raw "gofer price" "$_output"
 	echo "$_output"

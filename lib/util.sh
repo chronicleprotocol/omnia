@@ -85,6 +85,7 @@ signMessage () {
 	for arg in "$@"; do
 		_data+="$arg"
 	done
-	verbose "Signing message..."
-	ethsign message --from "$ETH_FROM" --key-store "$ETH_KEYSTORE" --passphrase-file "$ETH_PASSWORD" --data "$_data"
+	verbose "Signing message..." "from=$ETH_FROM"
+	ethsign message --from "$ETH_FROM" --key-store "$ETH_KEYSTORE" --passphrase-file "$ETH_PASSWORD" \
+		--data "$_data" 2> >(verbose --raw "ethsign log" "$(cat)")
 }

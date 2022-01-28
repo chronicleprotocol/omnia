@@ -13,7 +13,8 @@
     "setzerCacheExpiry": 120,
     "setzerMinMedian": 3,
     "setzerEthRpcUrl": "https://mainnet.infura.io/v3/fac98e56ea7e49608825dfc726fab703",
-    "verbose": true
+    "verbose": true,
+    "logFormat": "text"
   },
   "sources":["gofer","setzer"],
   "transports":["transport-spire","transport-ssb-rpc"],

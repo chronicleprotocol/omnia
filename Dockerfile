@@ -22,7 +22,8 @@ RUN go build ./cmd/spire
 RUN go build ./cmd/gofer
 RUN go build ./cmd/ssb-rpc-client
 
-#FROM python:3.10.2-alpine3.15
+#FROM python:3.10.2-alpine3.15 # failing `test -x file`
+#FROM python:3.9.10-alpine3.14 # failing `test -x file`
 FROM python:3.9.9-alpine3.13
 
 RUN apk add --update --no-cache \
@@ -63,15 +64,18 @@ COPY ./lib /opt/omnia/lib/
 COPY ./version /opt/omnia/version
 
 ENV HOME=/home/omnia
-WORKDIR ${HOME}
 
 ENV OMNIA_CONFIG ${HOME}/omnia.json
 ENV SPIRE_CONFIG ${HOME}/spire.json
+ENV GOFER_CONFIG ${HOME}/gofer.json
 ENV ETH_RPC_URL=http://geth.local:8545
 ENV ETH_GAS=7000000
 
-COPY ./docker/omnia/config/feed.json ${OMNIA_CONFIG}
+COPY ./config/feed.json ${OMNIA_CONFIG}
 COPY ./docker/spire/config/client_feed.json ${SPIRE_CONFIG}
+COPY ./docker/gofer/client.json ${GOFER_CONFIG}
+
+WORKDIR ${HOME}
 COPY ./docker/keystore/ .ethereum/keystore/
 COPY ./docker/ssb-server/config/manifest.json .ssb/manifest.json
 COPY ./docker/ssb-server/config/secret .ssb/secret

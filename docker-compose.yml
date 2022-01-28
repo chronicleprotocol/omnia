@@ -12,7 +12,29 @@ services:
       # - "./docker/geth/data:/home/geth/data"
       - "./docker/geth/config:/home/geth/config"
       - "./docker/keystore:/home/geth/keystore"
-    command: --datadir /home/geth/data --keystore /home/geth/keystore --networkid 99 --allow-insecure-unlock --unlock 0x1bb90cde8a032cb4963813a5b4db4981afa5b9c6,0xfadad77b3a7e5a84a1f7ded081e785585d4ffaf3,0x3980aa37f838bec2e457445d943feb3af98ff036 --networkid 99 --lightkdf --nodiscover --maxpeers=0 --port=0 --nousb --ipcdisable --mine --miner.threads 1 --miner.etherbase 0x1bb90cde8a032cb4963813a5b4db4981afa5b9c6 --http --http.port 8545 --http.api admin,personal,eth,miner,debug,txpool,net,web3 --http.addr 0.0.0.0 --http.corsdomain * --http.vhosts * --rpc.allow-unprotected-txs --password=/home/geth/keystore/password
+    command:
+      - "--datadir=/home/geth/data"
+      - "--keystore=/home/geth/keystore"
+      - "--password=/home/geth/keystore/password"
+      - "--allow-insecure-unlock"
+      - "--unlock=0x1bb90cde8a032cb4963813a5b4db4981afa5b9c6,0xfadad77b3a7e5a84a1f7ded081e785585d4ffaf3,0x3980aa37f838bec2e457445d943feb3af98ff036"
+      - "--networkid=99"
+      - "--lightkdf"
+      - "--nodiscover"
+      - "--maxpeers=0"
+      - "--port=0"
+      - "--nousb"
+      - "--ipcdisable"
+      - "--mine"
+      - "--miner.threads=1"
+      - "--miner.etherbase=0x1bb90cde8a032cb4963813a5b4db4981afa5b9c6"
+      - "--http"
+      - "--http.addr=0.0.0.0"
+      - "--http.port=8545"
+      - "--http.api=admin,personal,eth,miner,debug,txpool,net,web3"
+      - "--http.corsdomain=*"
+      - "--http.vhosts=*"
+      - "--rpc.allow-unprotected-txs"
 
 #  deployer:
 #   build:
@@ -24,62 +46,59 @@ services:
 
   ssb_server_feed:
    container_name: ssb-feed.local
-   image: ghcr.io/chronicleprotocol/ssb_dev:latest
+   image: ghcr.io/chronicleprotocol/ssb:dev
    build:
      context: "."
      dockerfile: "docker/ssb-server/Dockerfile"
-   expose:
-     - "8008"
    ports:
-     - "8008:8008"
+     - "8001:8000"
    volumes:
      - "./docker/ssb-server/config/feed_config.json:/root/.ssb/config"
      - "./docker/ssb-server/config/feed_secret:/root/.ssb/secret"
 
   ssb_server_relay:
    container_name: ssb-relay.local
-   image: ghcr.io/chronicleprotocol/ssb_dev:latest
+   image: ghcr.io/chronicleprotocol/ssb:dev
    build:
      context: "."
      dockerfile: "docker/ssb-server/Dockerfile"
-   expose:
-     - "8009"
    ports:
-     - "8009:8009"
+     - "8002:8000"
    volumes:
      - "./docker/ssb-server/config/relay_config.json:/root/.ssb/config"
      - "./docker/ssb-server/config/relay_secret:/root/.ssb/secret"
 
   gofer:
+    container_name: gofer.local
     image: ghcr.io/chronicleprotocol/oracle-suite:dev
     build:
       context: /home/box/maker/oracle-suite
+    expose:
+      - "9200"
     ports:
       - "9200:9200"
     entrypoint: ["/usr/local/bin/gofer"]
-    command: ["-c", "/etc/gofer.json", "agent"]
+    command: ["-c", "/etc/gofer.json","-v", "debug", "agent"]
     volumes:
-      - "./docker/gofer/agent.json:/etc/gofer.json"
+      - "./docker/gofer/local.agent.json:/etc/gofer.json"
 
   spire_feed:
-    image: ghcr.io/chronicleprotocol/spire:latest
+    image: ghcr.io/chronicleprotocol/oracle-suite:dev
     container_name: spire_feed.local
-    expose:
-      - "8000"
     ports:
       - "9101:9100"
+    entrypoint: ["/usr/local/bin/spire"]
     command: ["-c", "/etc/spire.json", "agent"]
     volumes:
       - "./docker/keystore:/root/keystore"
       - "./docker/spire/config/agent_feed.json:/etc/spire.json"
 
   spire_relay:
-    image: ghcr.io/chronicleprotocol/spire:latest
+    image: ghcr.io/chronicleprotocol/oracle-suite:dev
     container_name: spire_relay.local
-    expose:
-      - "8000"
     ports:
       - "9102:9100"
+    entrypoint: ["/usr/local/bin/spire"]
     command: ["-c", "/etc/spire.json", "agent"]
     volumes:
       - "./docker/keystore:/root/keystore"
@@ -90,7 +109,7 @@ services:
       - gofer
       - spire_feed
       - ssb_server_feed
-    image: ghcr.io/chronicleprotocol/omnia_dev:latest
+    image: ghcr.io/chronicleprotocol/omnia:dev
     build:
       context: "."
     volumes:
@@ -98,22 +117,24 @@ services:
       - "./lib:/opt/omnia/lib"
       - "./exec:/opt/omnia/exec"
       - "./test:/opt/omnia/test"
-      - "./docker/omnia/config/feed.json:/home/omnia/omnia.json"
-#      - "./docker/spire/config/client_feed.json:/home/omnia/spire.json"
-#      - "./docker/ssb-server/config/feed_config.json:/home/omnia/.ssb/config"
-#      - "./docker/ssb-server/config/feed_secret:/home/omnia/.ssb/secret"
-      - "/home/box/maker/dapptools/src/seth/libexec/seth/seth:/opt/seth/libexec/seth/seth"
+
+      - "./config/feed.json:/home/omnia/omnia.json"
+      - "./docker/spire/config/client_feed.json:/home/omnia/spire.json"
+      - "./docker/gofer/client.json:/home/omnia/gofer.json"
+
+      - "./docker/ssb-server/config/feed_config.json:/home/omnia/.ssb/config"
+      - "./docker/ssb-server/config/feed_secret:/home/omnia/.ssb/secret"
     environment:
       SSB_KEYS: /home/omnia/.ssb/secret
       SSB_CONF: /home/omnia/.ssb/config
       SSB_HOST: ssb-feed.local
-      SSB_PORT: 8008
+      SSB_PORT: 8001
 
   omnia_relay:
     depends_on:
       - spire_relay
       - geth
-    image: ghcr.io/chronicleprotocol/omnia_dev:latest
+    image: ghcr.io/chronicleprotocol/omnia:dev
     build:
       context: "."
     volumes:
@@ -129,4 +150,4 @@ services:
       SSB_KEYS: /home/omnia/.ssb/secret
       SSB_CONF: /home/omnia/.ssb/config
       SSB_HOST: ssb-relay.local
-      SSB_PORT: 8009
+      SSB_PORT: 8002

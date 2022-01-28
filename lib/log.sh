@@ -42,6 +42,9 @@ function _log() {
 	if [[ "${2,,}" == "--list" ]]; then
 		_argType="list"
 		shift
+	elif [[ "${2,,}" == "--raw" ]]; then
+		_argType="raw"
+		shift
 	fi
 
 	local _msg="${2}"

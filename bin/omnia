@@ -11,7 +11,6 @@ source ./config.sh
 source ./gasprice.sh
 source ./ethereum.sh
 source ./log.sh
-source ./scuttlebot.sh
 source ./source.sh
 source ./status.sh
 source ./util.sh

@@ -24,7 +24,6 @@ importEnv () {
 	importStarkwareEnv "$config"
 	importAssetPairsEnv "$config"
 	importOptionsEnv "$config"
-	importScuttlebotEnv || true
 	importServicesEnv "$config"
 
 	if [[ "$OMNIA_MODE" == "RELAYER" || "$OMNIA_MODE" == "RELAY" ]]; then
@@ -286,10 +285,4 @@ importServicesEnv () {
 	export SSB_ID_MAP
 
 	[[ -z ${errors[*]} ]] || { printf '%s\n' "${errors[@]}"; exit 1; }
-}
-
-importScuttlebotEnv() {
-	SCUTTLEBOT_FEED_ID=$(getFeedId)
-	[[ $SCUTTLEBOT_FEED_ID ]] || { error "Could not get scuttlebot feed id, make sure scuttlebot server is running"; return 1; }
-	export SCUTTLEBOT_FEED_ID
 }

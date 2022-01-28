@@ -1,8 +1,10 @@
 {
+  "ethereum": {
+    "rpc": "http://geth.local:8545"
+  },
   "gofer": {
-    "ethRpc": "http://geth.local:8545",
     "rpc": {
-      "address": "127.0.0.1:9200"
+      "address": ":9200"
     },
     "origins": {
       "openexchangerates": {

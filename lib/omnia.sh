@@ -24,29 +24,39 @@ initEnv () {
 	echo "Verbose Mode:                      $OMNIA_VERBOSE"
 	echo "Interval:                          $OMNIA_INTERVAL seconds"
 	echo ""
-	echo "ETHEREUM"
-	[[ $OMNIA_MODE == "RELAYER" || "$OMNIA_MODE" == "RELAY" ]] && echo "Network:                           $ETH_RPC_URL"
-	echo "Ethereum account:                  $ETH_FROM"
-	echo "  ETH_GAS_SOURCE          = $ETH_GAS_SOURCE"
-	echo "  ETH_MAXPRICE_MULTIPLIER = $ETH_MAXPRICE_MULTIPLIER"
-	echo "  ETH_MAXPRICE_MULTIPLIER = $ETH_MAXPRICE_MULTIPLIER"
-	[[ $ETH_GAS_SOURCE != "node" ]] && echo "  ETH_GAS_PRIORITY   = $ETH_GAS_PRIORITY"
-	echo ""
-	echo "SCUTTLEBOT"
-	echo "Feed address:                      $SCUTTLEBOT_FEED_ID"
-	[[ $OMNIA_MODE == "RELAYER" || "$OMNIA_MODE" == "RELAY" ]] && echo "   Peers:"
-	for feed in "${feeds[@]}"; do
-		printf '                                   %s\n' "$feed"
-	done
-	echo ""
+	if [[ $OMNIA_MODE == "RELAYER" || "$OMNIA_MODE" == "RELAY" ]]; then
+	  echo "ETHEREUM"
+		echo "  ETH_RPC_URL             = $ETH_RPC_URL"
+		echo "  ETH_FROM                = $ETH_FROM"
+		echo "  ETH_GAS_SOURCE          = $ETH_GAS_SOURCE"
+		echo "  ETH_MAXPRICE_MULTIPLIER = $ETH_MAXPRICE_MULTIPLIER"
+		echo "  ETH_MAXPRICE_MULTIPLIER = $ETH_MAXPRICE_MULTIPLIER"
+		[[ $ETH_GAS_SOURCE != "node" ]] && \
+		echo "  ETH_GAS_PRIORITY        = $ETH_GAS_PRIORITY"
+		echo ""
+		echo "  Peers:"
+		for feed in "${feeds[@]}"; do
+			printf '                                   %s\n' "$feed"
+		done
+		echo ""
+	fi
 	echo "ORACLE"
 	for assetPair in "${assetPairs[@]}"; do
 		printf '   %s\n' "$assetPair"
-		[[ $OMNIA_MODE == "RELAYER" || "$OMNIA_MODE" == "RELAY" ]] && printf '      Oracle Address:              %s\n' "$(getOracleContract "$assetPair")"
+
+		[[ $OMNIA_MODE == "RELAYER" || "$OMNIA_MODE" == "RELAY" ]] && \
+		printf '      Oracle Address:              %s\n' "$(getOracleContract "$assetPair")"
+
 		printf '      Message Expiration:          %s seconds\n' "$(getMsgExpiration "$assetPair")"
-		[[ $OMNIA_MODE == "FEED" ]] && printf '      Message Spread:              %s %% \n' "$(getMsgSpread "$assetPair")"
-		[[ $OMNIA_MODE == "RELAYER" || "$OMNIA_MODE" == "RELAY" ]] && printf '      Oracle Expiration:           %s seconds\n' "$(getOracleExpiration "$assetPair")"
-		[[ $OMNIA_MODE == "RELAYER" || "$OMNIA_MODE" == "RELAY" ]] && printf '      Oracle Spread:               %s %% \n' "$(getOracleSpread "$assetPair")"
+
+		[[ $OMNIA_MODE == "FEED" ]] && \
+		printf '      Message Spread:              %s %% \n' "$(getMsgSpread "$assetPair")"
+
+		[[ $OMNIA_MODE == "RELAYER" || "$OMNIA_MODE" == "RELAY" ]] && \
+		printf '      Oracle Expiration:           %s seconds\n' "$(getOracleExpiration "$assetPair")"
+
+		[[ $OMNIA_MODE == "RELAYER" || "$OMNIA_MODE" == "RELAY" ]] && \
+		printf '      Oracle Spread:               %s %% \n' "$(getOracleSpread "$assetPair")"
 	done
 	echo ""
 	echo "-------------------------- INITIALIZATION COMPLETE ---------------------------"
