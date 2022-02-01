@@ -71,8 +71,6 @@ services:
   gofer:
     container_name: gofer.local
     image: ghcr.io/chronicleprotocol/oracle-suite:dev
-    build:
-      context: /home/box/maker/oracle-suite
     expose:
       - "9200"
     ports:

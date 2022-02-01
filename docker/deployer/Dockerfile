@@ -1,4 +1,4 @@
-FROM ghcr.io/chronicleprotocol/base:latest
+FROM ghcr.io/chronicleprotocol/omnia_base:latest
 
 WORKDIR /home/dapp
 COPY ./docker/geth/bin/median-deploy /usr/local/bin/median-deploy

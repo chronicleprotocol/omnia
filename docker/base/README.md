@@ -24,5 +24,5 @@ List of preinstalled tools:
 ### Prebuilding image locally
 
 ```bash
-$ docker build -t ghcr.io/chronicleprotocol/base -f ./docker/base/Dockerfile .
+$ docker build -t ghcr.io/chronicleprotocol/omnia_base -f ./docker/base/Dockerfile .
 ```

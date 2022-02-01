@@ -22,8 +22,8 @@ RUN go build ./cmd/spire
 RUN go build ./cmd/gofer
 RUN go build ./cmd/ssb-rpc-client
 
-#FROM python:3.10.2-alpine3.15 # failing `test -x file`
-#FROM python:3.9.10-alpine3.14 # failing `test -x file`
+#FROM python:3.10.2-alpine3.15 # failing `test -x FILE`
+#FROM python:3.9.10-alpine3.14 # same
 FROM python:3.9.9-alpine3.13
 
 RUN apk add --update --no-cache \
