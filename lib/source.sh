@@ -42,7 +42,7 @@ readSourcesWithSetzer()  {
 		, sources: .|add
 		}' <<<"$_prices")"
 
-	verbose "setzer [price]" "#=$_output"
+	verbose --raw "setzer [price]" "$_output"
 	echo "$_output"
 }
 

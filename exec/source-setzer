@@ -8,4 +8,4 @@ verbose --list "setzer()" "$@"
 
 export ETH_RPC_URL="$SETZER_ETH_RPC_URL"
 
-setzer "$@" 2> >(STDERR_DATA="$(cat | ts -d '\n')"; [[ -z "$STDERR_DATA" ]] || verbose "setzer [stderr]" "$STDERR_DATA")
+setzer "$@" 2> >(STDERR_DATA="$(cat)"; [[ -z "$STDERR_DATA" ]] || verbose "setzer [stderr]" "$STDERR_DATA")

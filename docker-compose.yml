@@ -114,8 +114,8 @@ services:
     image: ghcr.io/chronicleprotocol/omnia:dev
     build:
       context: "."
-#      args:
-#        ORACLE_SUITE_BRANCH: "dev-test"
+      args:
+        ORACLE_SUITE_BRANCH: "sc-488/omnia-cannot-communicate-with-transports"
     volumes:
       - "./bin:/opt/omnia/bin"
       - "./lib:/opt/omnia/lib"
@@ -135,7 +135,7 @@ services:
       SSB_HOST: "ssb-feed.local"
       SSB_PORT: "8000"
       OMNIA_VERBOSE: "true"
-      OMNIA_LOG_FORMAT: "json"
+#      OMNIA_LOG_FORMAT: "json"
 
   omnia_relay:
     depends_on:
@@ -145,8 +145,6 @@ services:
     image: ghcr.io/chronicleprotocol/omnia:dev
     build:
       context: "."
-#      args:
-#        ORACLE_SUITE_BRANCH: "dev-test"
     volumes:
       - "./bin:/opt/omnia/bin"
       - "./lib:/opt/omnia/lib"

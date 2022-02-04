@@ -17,10 +17,10 @@
   "sources":["gofer","setzer"],
   "transports":["transport-spire","transport-ssb-rpc"],
   "pairs": {
-    "BAT/USD":{"msgExpiration":1800,"msgSpread":0.5},
-    "BTC/USD":{"msgExpiration":1800,"msgSpread":0.5},
-    "ETH/USD":{"msgExpiration":1800,"msgSpread":0.5},
-    "KNC/USD":{"msgExpiration":1800,"msgSpread":0.5},
-    "MANA/USD":{"msgExpiration":1800,"msgSpread":0.5}
+    "BAT/USD":{"msgExpiration":300,"msgSpread":0.5},
+    "BTC/USD":{"msgExpiration":300,"msgSpread":0.5},
+    "ETH/USD":{"msgExpiration":300,"msgSpread":0.5},
+    "KNC/USD":{"msgExpiration":300,"msgSpread":0.5},
+    "MANA/USD":{"msgExpiration":300,"msgSpread":0.5}
   }
 }
