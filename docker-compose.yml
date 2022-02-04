@@ -114,8 +114,8 @@ services:
     image: ghcr.io/chronicleprotocol/omnia:dev
     build:
       context: "."
-      args:
-        ORACLE_SUITE_BRANCH: "dev-test"
+#      args:
+#        ORACLE_SUITE_BRANCH: "dev-test"
     volumes:
       - "./bin:/opt/omnia/bin"
       - "./lib:/opt/omnia/lib"
@@ -145,8 +145,8 @@ services:
     image: ghcr.io/chronicleprotocol/omnia:dev
     build:
       context: "."
-      args:
-        ORACLE_SUITE_BRANCH: "dev-test"
+#      args:
+#        ORACLE_SUITE_BRANCH: "dev-test"
     volumes:
       - "./bin:/opt/omnia/bin"
       - "./lib:/opt/omnia/lib"

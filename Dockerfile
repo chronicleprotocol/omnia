@@ -12,7 +12,7 @@ WORKDIR /go/src/ethsign/src/ethsign
 RUN go mod tidy && go mod download
 RUN go build .
 
-ARG ORACLE_SUITE_BRANCH="v0.3.5"
+ARG ORACLE_SUITE_BRANCH="v0.4.0"
 
 WORKDIR /go/src/oracle-suite
 RUN git clone --depth 1 --branch ${ORACLE_SUITE_BRANCH} https://github.com/chronicleprotocol/oracle-suite.git .
