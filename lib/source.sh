@@ -9,7 +9,7 @@ _mapSetzer() {
 			--arg p "$(LANG=POSIX printf %0.10f "$_price")" \
 			'{($s):$p}'
 	else
-		echo "[$(date "+%D %T")] [E] Failed to get $_assetPair price from $_source is $_price" >&2
+		error "Failed to get asset price" "asset=$_assetPair" "source=$_source"
 	fi
 }
 export -f _mapSetzer
@@ -42,13 +42,13 @@ readSourcesWithSetzer()  {
 		, sources: .|add
 		}' <<<"$_prices")"
 
-	verbose --raw "setzer price" "$_output"
+	verbose "setzer [price]" "#=$_output"
 	echo "$_output"
 }
 
 readSourcesWithGofer()   {
 	local _data;
-	if _data=$(gofer price --config "$GOFER_CONFIG" --format json "$@")
+	if _data=$(gofer price --config "$GOFER_CONFIG" --format json "$@" 2> >(STDERR_DATA="$(cat)"; [[ -z "$STDERR_DATA" ]] || verbose "gofer [stderr]" "$STDERR_DATA"))
 	then
 		local _output
 		_output="$(jq -c '
@@ -70,6 +70,6 @@ readSourcesWithGofer()   {
 		return
 	fi
 
-	verbose --raw "gofer price" "$_output"
+	verbose "gofer [price]" "#=$_output"
 	echo "$_output"
 }

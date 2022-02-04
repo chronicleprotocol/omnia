@@ -34,7 +34,7 @@ readSourcesAndBroadcastAllPriceMessages()  {
 				continue
 			fi
 
-			verbose --raw "MSG" "$_message"
+			verbose "MSG" "#=$_message"
 
 			unset _unpublishedPairs["$_assetPair"]
 

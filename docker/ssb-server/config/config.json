@@ -1,10 +1,10 @@
 {
   "connections": {
     "incoming": {
-      "net": [{ "transform": "shs" }]
+      "net": [{"port": 8000, "transform": "shs" }]
     },
     "outgoing": {
-      "net": [{ "transform": "shs" }]
+      "net": [{"port": 8000, "transform": "shs" }]
     }
   },
   "caps": {

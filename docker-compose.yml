@@ -5,7 +5,7 @@ services:
     build:
       context: "."
       dockerfile: "docker/geth/Dockerfile"
-    ports: 
+    ports:
       - "8545:8545"
       - "30303:30303"
     volumes:
@@ -36,57 +36,59 @@ services:
       - "--http.vhosts=*"
       - "--rpc.allow-unprotected-txs"
 
-#  deployer:
-#   build:
-#     context: "."
-#     dockerfile: "docker/deployer/Dockerfile"
-#   volumes:
-#     - "./docker/geth/bin/:/root/bin"
-#   command: ["median-deploy", "BATUSD", "BTCUSD", "ETHUSD", "KNCUSD", "MANAUSD", "0x1bb90cde8a032cb4963813a5b4db4981afa5b9c6", "0x3980aa37f838bec2e457445d943feb3af98ff036"]
+  #  deployer:
+  #   build:
+  #     context: "."
+  #     dockerfile: "docker/deployer/Dockerfile"
+  #   volumes:
+  #     - "./docker/geth/bin/:/root/bin"
+  #   command: ["median-deploy", "BATUSD", "BTCUSD", "ETHUSD", "KNCUSD", "MANAUSD", "0x1bb90cde8a032cb4963813a5b4db4981afa5b9c6", "0x3980aa37f838bec2e457445d943feb3af98ff036"]
 
   ssb_server_feed:
-   container_name: ssb-feed.local
-   image: ghcr.io/chronicleprotocol/ssb:dev
-   build:
-     context: "."
-     dockerfile: "docker/ssb-server/Dockerfile"
-   ports:
-     - "8001:8000"
-   volumes:
-     - "./docker/ssb-server/config/feed_config.json:/root/.ssb/config"
-     - "./docker/ssb-server/config/feed_secret:/root/.ssb/secret"
+    container_name: ssb-feed.local
+    image: ghcr.io/chronicleprotocol/ssb:dev
+    build:
+      context: "."
+      dockerfile: "docker/ssb-server/Dockerfile"
+    ports:
+      - "8001:8000"
+    volumes:
+      - "./docker/ssb-server/config/feed_config.json:/root/.ssb/config"
+      - "./docker/ssb-server/config/feed_secret:/root/.ssb/secret"
 
   ssb_server_relay:
-   container_name: ssb-relay.local
-   image: ghcr.io/chronicleprotocol/ssb:dev
-   build:
-     context: "."
-     dockerfile: "docker/ssb-server/Dockerfile"
-   ports:
-     - "8002:8000"
-   volumes:
-     - "./docker/ssb-server/config/relay_config.json:/root/.ssb/config"
-     - "./docker/ssb-server/config/relay_secret:/root/.ssb/secret"
+    container_name: ssb-relay.local
+    image: ghcr.io/chronicleprotocol/ssb:dev
+    build:
+      context: "."
+      dockerfile: "docker/ssb-server/Dockerfile"
+    expose:
+      - "8000"
+    ports:
+      - "8002:8000"
+    volumes:
+      - "./docker/ssb-server/config/relay_config.json:/root/.ssb/config"
+      - "./docker/ssb-server/config/relay_secret:/root/.ssb/secret"
 
   gofer:
     container_name: gofer.local
     image: ghcr.io/chronicleprotocol/oracle-suite:dev
-    expose:
-      - "9200"
     ports:
       - "9200:9200"
-    entrypoint: ["/usr/local/bin/gofer"]
-    command: ["-c", "/etc/gofer.json","-v", "debug", "agent"]
+    entrypoint: [ "/usr/local/bin/gofer" ]
+    command: [ "-c", "/etc/gofer.json","-v", "debug", "agent" ]
     volumes:
       - "./docker/gofer/local.agent.json:/etc/gofer.json"
 
   spire_feed:
     image: ghcr.io/chronicleprotocol/oracle-suite:dev
     container_name: spire_feed.local
+#    expose:
+#      - "8000"
     ports:
       - "9101:9100"
-    entrypoint: ["/usr/local/bin/spire"]
-    command: ["-c", "/etc/spire.json", "agent"]
+    entrypoint: [ "/usr/local/bin/spire" ]
+    command: [ "-c", "/etc/spire.json", "agent", "-v", "info" ]
     volumes:
       - "./docker/keystore:/root/keystore"
       - "./docker/spire/config/agent_feed.json:/etc/spire.json"
@@ -94,10 +96,12 @@ services:
   spire_relay:
     image: ghcr.io/chronicleprotocol/oracle-suite:dev
     container_name: spire_relay.local
+#    expose:
+#      - "8000"
     ports:
       - "9102:9100"
-    entrypoint: ["/usr/local/bin/spire"]
-    command: ["-c", "/etc/spire.json", "agent"]
+    entrypoint: [ "/usr/local/bin/spire" ]
+    command: [ "-c", "/etc/spire.json", "agent", "-v", "info" ]
     volumes:
       - "./docker/keystore:/root/keystore"
       - "./docker/spire/config/agent_relay.json:/etc/spire.json"
@@ -110,6 +114,8 @@ services:
     image: ghcr.io/chronicleprotocol/omnia:dev
     build:
       context: "."
+      args:
+        ORACLE_SUITE_BRANCH: "dev-test"
     volumes:
       - "./bin:/opt/omnia/bin"
       - "./lib:/opt/omnia/lib"
@@ -122,30 +128,40 @@ services:
 
       - "./docker/ssb-server/config/feed_config.json:/home/omnia/.ssb/config"
       - "./docker/ssb-server/config/feed_secret:/home/omnia/.ssb/secret"
+
     environment:
-      SSB_KEYS: /home/omnia/.ssb/secret
-      SSB_CONF: /home/omnia/.ssb/config
-      SSB_HOST: ssb-feed.local
-      SSB_PORT: 8001
+      SSB_KEYS: "/home/omnia/.ssb/secret"
+      SSB_CONF: "/home/omnia/.ssb/config"
+      SSB_HOST: "ssb-feed.local"
+      SSB_PORT: "8000"
+      OMNIA_VERBOSE: "true"
+      OMNIA_LOG_FORMAT: "json"
 
   omnia_relay:
     depends_on:
-      - spire_relay
       - geth
+      - spire_relay
+      - ssb_server_relay
     image: ghcr.io/chronicleprotocol/omnia:dev
     build:
       context: "."
+      args:
+        ORACLE_SUITE_BRANCH: "dev-test"
     volumes:
-      - "./lib:/home/omnia/lib"
-      - "./test:/home/omnia/test"
-      - "./docker/omnia/config/relay.json:/home/omnia/config.conf"
+      - "./bin:/opt/omnia/bin"
+      - "./lib:/opt/omnia/lib"
+      - "./exec:/opt/omnia/exec"
+      - "./test:/opt/omnia/test"
+
+      - "./config/relay.json:/home/omnia/omnia.json"
       - "./docker/spire/config/client_relay.json:/home/omnia/spire.json"
+
       - "./docker/ssb-server/config/relay_config.json:/home/omnia/.ssb/config"
       - "./docker/ssb-server/config/relay_secret:/home/omnia/.ssb/secret"
     environment:
-      OMNIA_CONFIG: /home/omnia/config.conf
-      SPIRE_CONFIG: /home/omnia/spire.json
-      SSB_KEYS: /home/omnia/.ssb/secret
-      SSB_CONF: /home/omnia/.ssb/config
-      SSB_HOST: ssb-relay.local
-      SSB_PORT: 8002
+      SSB_KEYS: "/home/omnia/.ssb/secret"
+      SSB_CONF: "/home/omnia/.ssb/config"
+      SSB_HOST: "ssb-relay.local"
+      SSB_PORT: "8000"
+      OMNIA_VERBOSE: "true"
+#      OMNIA_LOG_FORMAT: "json"

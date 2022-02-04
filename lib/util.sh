@@ -87,5 +87,5 @@ signMessage () {
 	done
 	verbose "Signing message..." "from=$ETH_FROM"
 	ethsign message --from "$ETH_FROM" --key-store "$ETH_KEYSTORE" --passphrase-file "$ETH_PASSWORD" \
-		--data "$_data" 2> >(verbose --raw "ethsign log" "$(cat)")
+		--data "$_data" 2> >(STDERR_DATA="$(cat)"; [[ -z "$STDERR_DATA" ]] || verbose "ethsign [stderr]" "$STDERR_DATA")
 }

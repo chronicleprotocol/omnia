@@ -1,9 +1,9 @@
 {
-  "mode": "relayer",
+  "mode": "relay",
   "ethereum": {
     "from": "0x1bb90cde8a032cb4963813a5b4db4981afa5b9c6",
-    "keystore": "/home/omnia/keystore",
-    "password": "/home/omnia/keystore/password",
+    "keystore": "/home/omnia/.ethereum/keystore",
+    "password": "/home/omnia/.ethereum/keystore/password",
     "network": "http://geth.local:8545"
   },
   "feeds": [
@@ -12,10 +12,8 @@
   ],
   "options": {
     "interval": 60,
-    "msgLimit": 20,
-    "verbose": true
+    "msgLimit": 20
   },
-  "sources":["gofer","setzer"],
   "transports":["transport-spire","transport-ssb-rpc"],
   "pairs": {
     "BATUSD": {

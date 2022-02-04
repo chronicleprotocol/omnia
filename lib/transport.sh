@@ -4,7 +4,7 @@ transportPublish() {
 	local _succ=0
 	for _publisher in "${OMNIA_TRANSPORTS[@]}"; do
 		log "Publishing $_assetPair price message with $_publisher"
-		if "$_publisher" publish "$_message"; then
+		if "$_publisher" push "$_message"; then
 			((_succ++))
 			verbose "Published message" "asset=$_assetPair" "transport=$_publisher"
 		else
@@ -28,8 +28,13 @@ transportPull() {
 		log "Pulling $_assetPair price message with $_puller"
 		if _msg=$("$_puller" pull "$_feed" "$_assetPair" | jq -c)
 		then
-			_msgs["$_puller"]="$_msg"
-			verbose "Received message" "asset=$_assetPair" "transport=$_publisher"
+			if [[ -n "$_msg" ]]
+			then
+				_msgs["$_puller"]="$_msg"
+				verbose "Received message" "transport=$_puller" "asset=$_assetPair" "feed=$_feed"
+			else
+				warning "No message received" "transport=$_puller" "asset=$_assetPair" "feed=$_feed"
+			fi
 		else
 			error "Failed pulling $_assetPair price from feed $_feed with $_puller"
 		fi

@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 set -eo pipefail
 
+source ./log.sh
+
 case "$1" in
-	push)
+	push|publish)
 		_val="$(seth --to-wei "$(jq -r '.price' <<<"$2")" eth)"
 		_msg="$(jq --arg val "$_val" -c '{
 			price: {
@@ -18,13 +20,12 @@ case "$1" in
 			},
 			trace: .sources
 		}' <<<"$2")"
-		spire push -c "$SPIRE_CONFIG" price <<<"$_msg"
+		spire push -c "$SPIRE_CONFIG" price <<<"$_msg" -v info 2> >(STDERR_DATA="$(cat)"; [[ -z "$STDERR_DATA" ]] || verbose "spire [stderr]" "$STDERR_DATA") || exit $?
 		;;
 	pull)
 		_assetPair="$3"
 		_feedId="$2"
-		_msg="$(spire pull -c "$SPIRE_CONFIG" price "$_assetPair" "$_feedId")" \
-			|| exit $?
+		_msg="$(spire pull -c "$SPIRE_CONFIG" price "$_assetPair" "$_feedId" -v info 2> >(STDERR_DATA="$(cat)"; [[ -z "$STDERR_DATA" ]] || verbose "spire [stderr]" "$STDERR_DATA"))" || exit $?
 		_priceHex="$(seth --to-uint256 "$(jq -r '.price.val' <<<"$_msg")" | sed s/^0x//)"
 		_timeHex="$(seth --to-uint256 "$(jq -r '.price.age' <<<"$_msg")" | sed s/^0x//)"
 		jq -c --arg ph "$_priceHex" --arg th "$_timeHex" '{
@@ -37,4 +38,5 @@ case "$1" in
 			sources: .trace
 		}' <<<"$_msg"
 		;;
+	*) error "unknown command: $1";exit 1;;
 esac

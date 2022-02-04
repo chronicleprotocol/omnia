@@ -16,7 +16,9 @@ function error() {
 }
 
 function warning() {
-	_log "warning" "$@" >&2
+	if  [[ $OMNIA_VERBOSE == "true" ]]; then
+		_log "warning" "$@" >&2
+	fi
 }
 
 #log debug information after error
@@ -80,6 +82,7 @@ function _log() {
 		fi
 	fi
 
+	_logEntry="$(tr -d '\n' <<<"$_logEntry" | tr -d '\r')"
 	echo "$_logEntry"
 }
 
@@ -91,6 +94,7 @@ function _jsonArgs() {
 	for ARGUMENT in "$@"; do
 		_key="$(echo "$ARGUMENT" | cut -f1 -d=)"
 		_value="$(echo "$ARGUMENT" | cut -f2- -d=)"
+		_value="$(jq -Rsr . <<<"$_value")"
 
 		if [[ -n "$_args" ]]; then
 			_args="${_args},"

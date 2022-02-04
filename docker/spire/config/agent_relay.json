@@ -5,7 +5,7 @@
     "password": "/root/keystore/password"
   },
   "transport": {
-    "p2p": {
+    "libp2p": {
       "privKeySeed": "",
       "listenAddrs": ["/ip4/0.0.0.0/tcp/8000"],
       "bootstrapAddrs": [],
@@ -28,7 +28,7 @@
     "pairs": [
       "BATUSD",
       "BTCUSD",
-      "ETHBTC",
+      "ETHUSD",
       "KNCUSD",
       "MANAUSD"
     ]
