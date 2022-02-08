@@ -111,7 +111,7 @@ services:
       - gofer
       - spire_feed
       - ssb_server_feed
-    image: ghcr.io/chronicleprotocol/omnia:dev
+    image: ghcr.io/chronicleprotocol/omnia_dev:latest
     build:
       context: "."
       args:
@@ -142,7 +142,7 @@ services:
       - geth
       - spire_relay
       - ssb_server_relay
-    image: ghcr.io/chronicleprotocol/omnia:dev
+    image: ghcr.io/chronicleprotocol/omnia_dev:latest
     build:
       context: "."
     volumes:
