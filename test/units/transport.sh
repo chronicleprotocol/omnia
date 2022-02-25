@@ -11,7 +11,7 @@ lib_path="$root_path/lib"
 # Mock setzer
 transport-mock() {
 	case "$1" in
-		publish)
+		push|publish)
 			echo "$2" >> $wdir/output
 			;;
 		pull)
@@ -24,7 +24,7 @@ export -f transport-mock
 
 transport-mock-other() {
 	case "$1" in
-		publish)
+		push|publish)
 			jq '.time += 10' <<<"$2" >> $wdir/output
 			;;
 		*) return 1;;
