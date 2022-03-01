@@ -1,5 +1,6 @@
 #!/bin/bash
 test_path=$(cd "${BASH_SOURCE[0]%/*}"; pwd)
+export test_path
 root_path=$(cd "$test_path/../.."; pwd)
 lib_path="$root_path/lib"
 
