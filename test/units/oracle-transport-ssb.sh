@@ -21,8 +21,8 @@ ssb-server() {
 		whoami)
 			echo '{"id":"f33d1d"}'
 			;;
-		push|publish)
-			cat "$2" >> $wdir/output
+		publish)
+			cat | tee $wdir/output
 			;;
 		createUserStream)
 			if [[ $TEST_SET_NON_STALE_MESSAGES ]]; then
@@ -50,10 +50,10 @@ transport-ssb pull "0x1f8fbe73820765677e68eb6e933dcb3c94c9b708" BTC/USD > $wdir/
 assert "pulled price message" json '.type' <<<'"BTCUSD"'
 
 echo '{}' > $wdir/output
-assert "broadcast price message" run transport-ssb publish '{"hash":"AB","price":0.222,"priceHex":"ABC","signature":"CD","sources":{"s1":"0.1","s2":"0.2","s3":"0.3"},"time":'$currentTime',"timeHex":"DEF","type":"BTCUSD","version":"dev-test"}'
+assert "broadcast price message" run transport-ssb push '{"hash":"AB","price":0.222,"priceHex":"ABC","signature":"CD","sources":{"s1":"0.1","s2":"0.2","s3":"0.3"},"time":'$currentTime',"timeHex":"DEF","type":"BTCUSD","version":"dev-test"}'
 assert "verify the broadcast message" json . <<<'{"price":0.222,"hash":"AB","priceHex":"ABC","signature":"CD","sources":{"s1":"0.1","s2":"0.2","s3":"0.3"},"time":'$currentTime',"timeHex":"DEF","type":"BTCUSD","version":"dev-test"}'
 
 TEST_SET_NON_STALE_MESSAGES=1
 echo '{}' > $wdir/output
-assert "broadcast message with non-stale latest message" run transport-ssb publish '{"hash":"AB","price":0.222,"priceHex":"ABC","signature":"CD","sources":{"s1":"0.1","s2":"0.2","s3":"0.3"},"time":'$currentTime',"timeHex":"DEF","type":"BTCUSD","version":"dev-test"}'
+assert "broadcast message with non-stale latest message" run transport-ssb push '{"hash":"AB","price":0.222,"priceHex":"ABC","signature":"CD","sources":{"s1":"0.1","s2":"0.2","s3":"0.3"},"time":'$currentTime',"timeHex":"DEF","type":"BTCUSD","version":"dev-test"}'
 assert "no broadcast should have been done" json '.' <<<'{}'

@@ -13,6 +13,7 @@ trap "trap - HUP; timeup" HUP
 set -eo pipefail
 
 wdir=$(mktemp -d "${TMPDIR:-/tmp}"/tapsh.XXXXXXXX)
+export wdir
 
 log() {
   cat > $wdir/log
