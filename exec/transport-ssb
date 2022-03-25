@@ -23,7 +23,7 @@ isntStale() {
 }
 
 getMyId() {
-	ssb-server whoami 2> /dev/null | jq -r '.id'
+	ssb-server whoami 2> >(STDERR_DATA="$(cat)"; [[ -z "$STDERR_DATA" ]] || verbose "ssb-server whoami [stderr]" "$STDERR_DATA") | jq -r '.id'
 }
 
 getId() {
@@ -42,7 +42,7 @@ pullLatestFeedMsgOfType() {
 	_assetPair=${_assetPair/\/}
 	_assetPair=${_assetPair^^}
 	local _msg;
-	if _msg=$(ssb-server createUserStream --id "$_feedId" --limit "$OMNIA_MSG_LIMIT" --reverse --fillCache 1)
+	if _msg=$(ssb-server createUserStream --id "$_feedId" --limit "$OMNIA_MSG_LIMIT" --reverse --fillCache 1 2> >(STDERR_DATA="$(cat)"; [[ -z "$STDERR_DATA" ]] || verbose "ssb-server createUserStream [stderr]" "$STDERR_DATA"))
 	then
 		jq -scM --arg pair "$_assetPair" '
 			[.[] | select(.value.content.type == $pair)]
@@ -73,7 +73,7 @@ publishMsg() {
 	then
 		verbose "SKIPPING - last message is NOT stale." "transport=ssb" "feed=$_feedId" "asset=$_assetPair"
 	else
-		ssb-server publish . <<<"$_msg" | jq -c .
+		ssb-server publish . <<<"$_msg" 2> >(STDERR_DATA="$(cat)"; [[ -z "$STDERR_DATA" ]] || verbose "ssb-server publish [stderr]" "$STDERR_DATA") | jq -c .
 	fi
 }
 

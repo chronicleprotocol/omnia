@@ -6,4 +6,4 @@ cd "$(cd "${0%/*/*}" && pwd)/lib"
 source ./log.sh
 verbose --list "seth()" "$@"
 
-exec seth "$@"
+seth "$@" 2> >(STDERR_DATA="$(cat)"; [[ -z "$STDERR_DATA" ]] || verbose "seth [stderr]" "$STDERR_DATA")
