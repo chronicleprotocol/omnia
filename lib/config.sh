@@ -53,25 +53,23 @@ importTransports () {
 importNetwork () {
 	local _json="$1"
 
-	#this parameter is not needed when using a custom rpc node
-	INFURA_KEY="$(echo "$_json" | jq -r .infuraKey)"
+	INFURA_KEY="$(echo "$_json" | jq -r '.infuraKey // ""')"
 	[[ -z "$INFURA_KEY" ]] || [[ "$INFURA_KEY" =~ ^[0-9a-f]{32}$ ]] || errors+=("Error - Invalid Infura Key")
 	export INFURA_KEY
 
 	network="$(echo "$_json" | jq -r .network)"
 	case "${network,,}" in
-	ethlive|mainnet)
-		ETH_RPC_URL=https://mainnet.infura.io/v3/$INFURA_KEY
-		;;
-	ropsten|kovan|rinkeby|goerli)
-		ETH_RPC_URL=https://${network,,}.infura.io/v3/$INFURA_KEY
-		;;
-	*)
-		#custom RPC endpoint like Local Node, Ganache or Testchain
-		ETH_RPC_URL=$network
-		;;
+		ethlive|mainnet)
+			ETH_RPC_URL=https://mainnet.infura.io/v3/$INFURA_KEY
+			;;
+		ropsten|kovan|rinkeby|goerli)
+			ETH_RPC_URL=https://${network,,}.infura.io/v3/$INFURA_KEY
+			;;
+		*)
+			ETH_RPC_URL=$network
+			;;
 	esac
-	#validate connection to ethereum network
+
 	[[ $(ethereum --rpc-url "$ETH_RPC_URL" block latest number) =~ ^[1-9]*[0-9]*$ ]] || errors+=("Error - Unable to connect to Ethereum network.\nValid options are: ethlive, mainnet, ropsten, kovan, rinkeby, goerli, or a custom endpoint")
 	[[ -z ${errors[*]} ]] || { printf '%s\n' "${errors[@]}"; exit 1; }
 	export ETH_RPC_URL
