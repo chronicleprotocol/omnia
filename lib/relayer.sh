@@ -35,7 +35,7 @@ updateOracle () {
             local allS=()
             local allV=()
             sortMsgs "${entries[@]}"
-            verbose "sorted messages" "${_sortedEntries[*]}"
+            verbose --raw "sorted messages" "${_sortedEntries[*]}"
             generateCalldata "${_sortedEntries[@]}"
             pushOraclePrice "$assetPair"
         fi
@@ -79,7 +79,7 @@ pullLatestPricesOfAssetPair () {
 
 sortMsgs () {
     local _msgs=( "$@" )
-    verbose "Presorted Messages" "${_msgs[*]}"
+    verbose --raw "Presorted Messages" "${_msgs[*]}"
     readarray -t _sortedEntries < <(echo "${_msgs[*]}" | jq -s '.' | jq 'sort_by(.price)' | jq -c '.[]')
 }
 
