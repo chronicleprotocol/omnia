@@ -17,7 +17,7 @@ updateOracle () {
         pullLatestPricesOfAssetPair "$assetPair" "$_quorum"
 
         for entry in "${entries[@]}"; do
-            verbose "Price entry" "data#=$(jq -c 'tojson' <<<"$entry")"
+            verbose --raw "Price entry" "$(jq -c 'tojson' <<<"$entry")"
         done
 
         [ "$(isQuorum "$assetPair" "${#entries[@]}")" == "false" ] && continue
@@ -61,7 +61,7 @@ pullLatestPricesOfAssetPair () {
           break
         fi
  
-        log "Polling feed: $feed"
+        log "Polling feed" "feedAddr=$feed"
         # Grab latest price msg of asset from feed then verify price msg is
         # valid and not expired.
         local priceEntry
