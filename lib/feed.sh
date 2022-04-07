@@ -124,7 +124,7 @@ validateAndConstructMessage() {
 
 	if [[ "$(isPriceValid "$median")" == "false" ]]; then
 		error "Error - Failed to calculate valid median: ($median)"
-		debug "Sources = $sourcePrices"
+		debug "sources" "$sourcePrices"
 		return 1
 	fi
 
@@ -132,7 +132,7 @@ validateAndConstructMessage() {
 	time=$(timestampS)
 	if [[ ! "$time" =~ ^[1-9]{1}[0-9]{9}$ ]]; then
 		error "Error - Got invalid timestamp"
-		debug "Invalid Timestamp = $time"
+		debug "Invalid Timestamp" "$time"
 		return 1
 	fi
 
@@ -141,8 +141,7 @@ validateAndConstructMessage() {
 	timeHex=${timeHex#"0x"}
 	if [[ ! "$timeHex" =~ ^[0-9a-fA-F]{64}$ ]]; then
 		error "Error - Failed to convert timestamp to hex"
-		debug "Timestamp = $time"
-		debug "Invalid Timestamp Hex = $timeHex"
+		debug "Invalid Timestamp Hex" "timestamp=$time" "hex=$timeHex"
 		return 1
 	fi
 
@@ -151,8 +150,7 @@ validateAndConstructMessage() {
 	medianHex=${medianHex#"0x"}
 	if [[ ! "$medianHex" =~ ^[0-9a-fA-F]{64}$ ]]; then
 		error "Error - Failed to convert median to hex:"
-		debug "Median = $median"
-		debug "Invalid Median Hex = $medianHex"
+		debug "Invalid Median Hex" "hex=$medianHex" "median=$median"
 		return 1
 	fi
 
@@ -161,8 +159,7 @@ validateAndConstructMessage() {
 	assetPairHex=${assetPairHex#"0x"}
 	if [[ ! "$assetPairHex" =~ ^[0-9a-fA-F]{64}$ ]]; then
 		error "Error - Failed to convert asset pair to hex:"
-		debug "Asset Pair = $_assetPair"
-		debug "Invalid Asset Pair Hex = $assetPairHex"
+		debug "Invalid Asset Pair Hex" "hex=$assetPairHex" "pair=$_assetPair"
 		return 1
 	fi
 
@@ -170,10 +167,7 @@ validateAndConstructMessage() {
 	hash=$(keccak256Hash "0x" "$medianHex" "$timeHex" "$assetPairHex")
 	if [[ ! "$hash" =~ ^(0x){1}[0-9a-fA-F]{64}$ ]]; then
 		error "Error - failed to generate valid hash"
-		debug "Median Hex = $medianHex"
-		debug "Timestamp Hex = $timeHex"
-		debug "Asset Pair Hex = $assetPairHex"
-		debug "Invalid Hash = $hash"
+		debug "Invalid Hash" "hash=$hash" "assetPairHex=$assetPairHex" "timestampHex=$timeHex" "medianHex=$medianHex"
 		return 1
 	fi
 
@@ -181,8 +175,7 @@ validateAndConstructMessage() {
 	sig=$(signMessage "$hash")
 	if [[ ! "$sig" =~ ^(0x){1}[0-9a-f]{130}$ ]]; then
 		error "Error - Failed to generate valid signature"
-		debug "Hash = $hash"
-		debug "Invalid Signature = $sig"
+		debug "Invalid Signature" "sig=$sig" "hash=$hash"
 		return 1
 	fi
 
@@ -191,10 +184,7 @@ validateAndConstructMessage() {
 	starkHash=$("$STARK_CLI" --method "hash" --time "$timeHex" --price "$medianHex" --oracle "4d616b6572" --asset "$assetPairHexShortened")
 	if [[ ! "$starkHash" =~ ^[0-9a-fA-F]{1,64}$ ]]; then
 		error "Error - failed to generate valid stark hash"
-		debug "Median Hex = $medianHex"
-		debug "Timestamp Hex = $timeHex"
-		debug "Asset Pair Hex = $assetPairHexShortened"
-		debug "Invalid Hash = $starkHash"
+		debug "Invalid Hash" "hash=$starkHash" "timestampHex=$timeHex" "assetPairHex=$assetPairHexShortened"
 		return 1
 	fi
 
@@ -202,8 +192,7 @@ validateAndConstructMessage() {
 	starkSig=$("$STARK_CLI" --method "sign" --data "$starkHash" --key "$STARK_PRIVATE_KEY")
 	if [[ ! "$starkSig" =~ ^0x[0-9a-f]{1,64}[[:space:]]0x[0-9a-f]{1,64}$ ]]; then
 		error "Error - Failed to generate valid stark signature"
-		debug "Hash = $starkHash"
-		debug "Invalid Signature = $starkSig"
+		debug "Invalid Signature" "sig=$starkSig" "hash=$starkHash"
 		return 1
 	fi
 	starkSigR=$(echo "$starkSig" | cut -d " " -f1)

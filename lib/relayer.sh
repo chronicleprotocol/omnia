@@ -24,7 +24,7 @@ updateOracle () {
         _prices=$(extractPrices "${entries[@]}")
 
         _median=$(getMedian "${_prices[@]}")
-        log "-> median = $_median"
+        verbose "median" "val=$_median"
 
         if [[ ( "$(isPriceValid "$_median")" == "true" ) \
         && ( "$(isOracleStale "$assetPair" "$_median")" == "true" \
@@ -35,7 +35,7 @@ updateOracle () {
             local allS=()
             local allV=()
             sortMsgs "${entries[@]}"
-            verbose "sorted messages = ${_sortedEntries[*]}"
+            verbose "sorted messages" "${_sortedEntries[*]}"
             generateCalldata "${_sortedEntries[@]}"
             pushOraclePrice "$assetPair"
         fi
@@ -79,8 +79,7 @@ pullLatestPricesOfAssetPair () {
 
 sortMsgs () {
     local _msgs=( "$@" )
-    verbose "Sorting Messages..."
-    verbose "Presorted Messages = ${_msgs[*]}"
+    verbose "Presorted Messages" "${_msgs[*]}"
     readarray -t _sortedEntries < <(echo "${_msgs[*]}" | jq -s '.' | jq 'sort_by(.price)' | jq -c '.[]')
 }
 
@@ -98,9 +97,5 @@ generateCalldata () {
         allPrices+=( "0x$( echo "$msg" | jq -r '.priceHex' )" )
         allTimes+=( "0x$( echo "$msg" | jq -r '.timeHex' )" )
     done
-    verbose "allPrices = ${allPrices[*]}"
-    verbose "allTimes = ${allTimes[*]}"
-    verbose "allR = ${allR[*]}"
-    verbose "allS = ${allS[*]}"
-    verbose "allV = ${allV[*]}"
+    verbose "allPrices=${allPrices[*]}" "allTimes=${allTimes[*]}" "allR=${allR[*]}" "allS=${allS[*]}" "allV=${allV[*]}"
 }

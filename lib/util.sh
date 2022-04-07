@@ -35,7 +35,7 @@ keccak256Hash () {
 	for arg in "$@"; do
 		_inputs+="$arg"
 	done
-	verbose "inputs to hash function = $_inputs"
+	verbose "inputs to hash function" "$_inputs"
 	ethereum keccak "$_inputs"
 }
 
