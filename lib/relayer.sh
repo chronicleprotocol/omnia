@@ -17,7 +17,7 @@ updateOracle () {
         pullLatestPricesOfAssetPair "$assetPair" "$_quorum"
 
         for entry in "${entries[@]}"; do
-            verbose "Price entry" "data=\"$(jq -c 'tojson' <<<"$entry")\""
+            verbose "Price entry" "data#=$(jq -c 'tojson' <<<"$entry")"
         done
 
         [ "$(isQuorum "$assetPair" "${#entries[@]}")" == "false" ] && continue
