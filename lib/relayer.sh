@@ -71,7 +71,7 @@ pullLatestPricesOfAssetPair () {
         && [ "$(isMsgExpired "$_assetPair" "$priceEntry")" == "false" ] \
         && [ "$(isMsgNew "$_assetPair" "$priceEntry")" == "true" ]
         then
-            log "Adding message from $feed to catalogue"
+            log "Adding message catalogue" "feedAddr=$feed"
             entries+=( "$priceEntry" )
         fi
     done
