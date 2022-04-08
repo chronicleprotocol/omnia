@@ -110,7 +110,7 @@ We use `smocker` for mocking Exchange API requests/responses and local `geth` fo
 To setup environment you can use this command:
 
 ```bash
-$ docker-compose -f .github/docker-compose-e2e.yml run omnia_e2e 
+$ docker-compose -f .github/docker-compose-e2e-tests.yml run omnia_e2e 
 ```
 
 ### E2E Tests Development
@@ -120,8 +120,13 @@ For tests development process we created additional image `omnia_e2e_dev`.
 Run it:
 
 ```bash
-$ docker-compose -f .github/docker-compose-e2e.yml run --rm omnia_e2e_dev
+$ docker-compose -f .github/docker-compose-e2e-tests.yml run --rm omnia_e2e_dev
 ```
 
 It will start `bash` session inside omnia dev container with mounted folders.
+From here you might run E2E tests using command: 
+
+```bash
+$ go test -v -p 1 -parallel 1 -cpu 1 ./...
+```
 

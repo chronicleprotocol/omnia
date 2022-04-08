@@ -3,7 +3,6 @@ package feeder
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"testing"
 	"time"
@@ -42,7 +41,10 @@ func (s *FeedBaseBehaviourE2ESuite) TestPartialInvalidPricesLessThanMin() {
 	s.Require().NoError(err)
 
 	err = s.Omnia.Start()
-	fmt.Println(s.Omnia.StdoutString())
+	s.Assert().NoError(err)
+	// fmt.Println(s.Omnia.StdoutString())
+
+	time.Sleep(3 * time.Second)
 
 	err = s.Omnia.Stop()
 	s.Assert().NoError(err)
@@ -71,7 +73,14 @@ func (s *FeedBaseBehaviourE2ESuite) TestAllInvalidPrices() {
 	s.Require().NoError(err)
 
 	err = s.Omnia.Start()
-	fmt.Println(s.Omnia.StdoutString())
+	s.Assert().NoError(err)
+	// TODO: sleep ?
+	// fmt.Println(s.Omnia.StdoutString())
+
+	time.Sleep(3 * time.Second)
+
+	err = s.Omnia.Stop()
+	s.Assert().NoError(err)
 
 	s.Assert().True(s.Transport.IsEmpty())
 }
@@ -95,7 +104,8 @@ func (s *FeedBaseBehaviourE2ESuite) TestMinValuablePrices() {
 	s.Require().NoError(err)
 
 	err = s.Omnia.Start()
-	fmt.Println(s.Omnia.StdoutString())
+	s.Assert().NoError(err)
+	// fmt.Println(s.Omnia.StdoutString())
 
 	ch, err := s.Transport.ReadChan()
 	s.Require().NoError(err)
