@@ -68,7 +68,7 @@ readSourcesWithGofer()   {
 			}
 		' <<<"$_data")"
 	else
-		error --list "Failed getting prices from gofer" "config=$GOFER_CONFIG" "$@"
+		error --list "Failed to get prices from gofer" "config=$GOFER_CONFIG" "$@"
 		return
 	fi
 
