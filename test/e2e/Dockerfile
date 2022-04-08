@@ -57,4 +57,4 @@ COPY . /app
 WORKDIR /app/test/e2e
 RUN go mod download
 
-CMD ["go", "test", "-v", "-p", "./..."]
+CMD ["go", "test", "-v", "-p", "1", "./..."]
