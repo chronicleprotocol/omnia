@@ -9,9 +9,7 @@ _mapSetzer() {
 			--arg p "$(LANG=POSIX printf %0.10f "$_price")" \
 			'{($s):$p}'
 	else
-		source ./log.sh
-		error "Failed to get asset price" "asset=$_assetPair" "source=$_source"
-#		echo "[$(date "+%D %T")] [E] Failed to get $_assetPair price from $_source is $_price" >&2
+		echo "{\"level\":\"error\",\"msg\":\"Failed to get asset price\",\"asset\":\"$_assetPair\",\"source\":\"$_source\",\"time\":\"$(date "+%s")\"}"
 	fi
 }
 export -f _mapSetzer
