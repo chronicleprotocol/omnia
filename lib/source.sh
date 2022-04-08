@@ -9,7 +9,7 @@ _mapSetzer() {
 			--arg p "$(LANG=POSIX printf %0.10f "$_price")" \
 			'{($s):$p}'
 	else
-		echo "{\"level\":\"error\",\"msg\":\"Failed to get asset price\",\"asset\":\"$_assetPair\",\"source\":\"$_source\",\"time\":\"$(date "+%s")\"}"
+		echo "{\"level\":\"error\",\"msg\":\"Failed to get asset price\",\"asset\":\"$_assetPair\",\"source\":\"$_source\",\"time\":\"$(date "+%s")\"}" &>2
 	fi
 }
 export -f _mapSetzer
