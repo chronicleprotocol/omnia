@@ -48,6 +48,7 @@ readSourcesWithSetzer()  {
 
 readSourcesWithGofer()   {
 	local _data;
+
 set -x
 	if _data=$(gofer price --config "$GOFER_CONFIG" --format json "$@" 2> >(STDERR_DATA="$(cat)"; [[ -z "$STDERR_DATA" ]] || verbose "gofer [stderr]" "$STDERR_DATA"))
 	then
@@ -71,6 +72,7 @@ set -x
 		return
 	fi
 set +x
+
 #	while IFS= read -r _json; do
 #		verbose --raw "gofer sourced data" "$_json"
 #	done <<<"$_output"
