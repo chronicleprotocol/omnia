@@ -22,7 +22,7 @@ isAssetPair () {
 isPriceValid () {
 	local _price="$1"
 	if ! [[ -n "$_price" && "$_price" =~ ^([1-9][0-9]*([.][0-9]+)?|[0][.][0-9]*[1-9]+[0-9]*)$ ]]; then
-		error "Error - Invalid price ($_price)"
+		error "Invalid price ($_price)"
 		echo false
 	else
 		echo true

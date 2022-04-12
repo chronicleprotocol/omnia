@@ -46,16 +46,10 @@ readSourcesWithSetzer()  {
 	echo "$_output"
 }
 
-readSourcesWithGofer()   {
-	local _data;
-
-set -x
-	if _data=$(gofer price --config "$GOFER_CONFIG" --format json "$@" 2> >(STDERR_DATA="$(cat)"; [[ -z "$STDERR_DATA" ]] || verbose "gofer [stderr]" "$STDERR_DATA"))
-	then
-		local _output
-		_output="$(jq -c '
-			.[]
-			| {
+readSourcesWithGofer() {
+	gofer price --config "$GOFER_CONFIG" --format ndjson "$@" \
+	2> >(STDERR_DATA="$(cat)"; [[ -z "$STDERR_DATA" ]] || error "gofer [stderr]" "$STDERR_DATA") \
+	| jq -c '{
 				asset: (.base+"/"+.quote),
 				median: .price,
 				sources: (
@@ -65,18 +59,6 @@ set -x
 					]
 					| add
 				)
-			}
-		' <<<"$_data")"
-	else
-		error --list "Failed to get prices from gofer" "app=gofer" "config=$GOFER_CONFIG" "$@"
-		return
-	fi
-set +x
-
-#	while IFS= read -r _json; do
-#		verbose --raw "gofer sourced data" "$_json"
-#	done <<<"$_output"
-	verbose --raw "sourced data" "$(jq -sc 'tojson' <<<"$_output")"
-
-	echo "$_output"
+			}' | tee >(_data="$(cat)"; verbose --raw "gofer [price]" "$_data") \
+	|| error --list "Failed to get prices from gofer" "app=gofer" "config=$GOFER_CONFIG" "$@"
 }

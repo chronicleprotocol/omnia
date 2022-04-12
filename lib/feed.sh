@@ -17,7 +17,9 @@ readSourcesAndBroadcastAllPriceMessages()  {
 			break
 		fi
 
-		while IFS= read -r _json; do
+		readSource "$_src" "${!_unpublishedPairs[@]}" | \
+		while IFS= read -r _json
+		do
 			if [[ -z "$_json" ]]; then
 				continue
 			fi
@@ -27,7 +29,8 @@ readSourcesAndBroadcastAllPriceMessages()  {
 			_median=$(jq -r .median <<<"$_json")
 			local _sources
 			_sources=$(jq -rS '.sources' <<<"$_json")
-			local _message=$(validateAndConstructMessage "$_assetPair" "$_median"	"$_sources")
+			local _message
+			_message=$(validateAndConstructMessage "$_assetPair" "$_median"	"$_sources")
 
 			if [[ -z "$_message" ]]; then
 				error "Failed constructing price message" "asset=$_assetPair" "src=$_src"
@@ -39,7 +42,7 @@ readSourcesAndBroadcastAllPriceMessages()  {
 			unset _unpublishedPairs["$_assetPair"]
 
 			transportPublish "$_assetPair" "$_message" || error "all transports failed" "asset=$_assetPair"
-		done < <(readSource "$_src" "${!_unpublishedPairs[@]}")
+		done
 	done
 }
 
@@ -123,7 +126,7 @@ validateAndConstructMessage() {
 	local sourcePrices="$3"
 
 	if [[ "$(isPriceValid "$median")" == "false" ]]; then
-		error "Error - Failed to calculate valid median: ($median)"
+		error "Failed to calculate valid median: ($median)"
 		debug "sources" "$sourcePrices"
 		return 1
 	fi
