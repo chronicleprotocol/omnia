@@ -25,7 +25,7 @@ export -f setzer
 # Mock gofer
 gofer() {
 	case "$*" in
-		*BAT/USD*) cat "$test_path/messages/gofer-batusd-resp.json";;
+		*BAT/USD*) cat "$test_path/messages/gofer-batusd-resp.jsonl";;
 		*) return 1;;
 	esac
 }
