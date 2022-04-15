@@ -29,7 +29,12 @@ assert "property is set properly" json '.params.delta' <<< '"delta"'
 
 assert "logger creates valid json" run_json _log "info" --list "test message" "alpha=1" "beta=x" "gamma=true" "delta"
 assert "json output has all keys" json 'keys' <<< '["level","msg","params","time"]'
-assert "json output has all keys" json '.params|length' <<< '4'
+assert "json output .params length is 4" json '.params|length' <<< '4'
+assert "json output .params equal" json '.params' <<< '["alpha=1","beta=x","gamma=true","delta"]'
+
+assert "logger creates valid json" run_json _log "info" --raw "test message" '{"x":0,"y":"a","z":false}'
+assert "json output has all keys" json 'keys' <<< '["level","msg","params","time"]'
+assert "json output .params has all keys" json '.params|keys' <<< '["x","y","z"]'
 
 unset OMNIA_LOG_FORMAT
 

@@ -59,6 +59,6 @@ readSourcesWithGofer() {
 					]
 					| add
 				)
-			}' | tee >(_data="$(cat)"; verbose --raw "gofer [price]" "$_data") \
+			}' | tee >(_data="$(cat)"; verbose --raw "gofer [price]" "$(jq -sc <<<"$_data")") \
 	|| error --list "Failed to get prices from gofer" "app=gofer" "config=$GOFER_CONFIG" "$@"
 }
