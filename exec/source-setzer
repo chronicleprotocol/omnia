@@ -3,9 +3,52 @@ set -eo pipefail
 if [[ -n $OMNIA_DEBUG ]]; then set -x; fi
 
 cd "$(cd "${0%/*/*}" && pwd)/lib"
-source ./log.sh
-verbose --list "setzer()" "$@"
 
 export ETH_RPC_URL="$SETZER_ETH_RPC_URL"
 
-setzer "$@" 2> >(STDERR_DATA="$(cat)"; [[ -z "$STDERR_DATA" ]] || verbose "setzer [stderr]" "$STDERR_DATA")
+_mapSetzer() {
+	local _assetPair="$1"
+	local _source="$2"
+
+	# shellcheck disable=SC2155
+	local _price=$(setzer price "$_assetPair" "$_source" 2> >(STDERR_DATA="$(cat)"; [[ -z "$STDERR_DATA" ]] \
+	|| echo >&2 "{\"level\":\"verbose\",\"msg\":\"setzer price [stderr]\",\"message\":\"$STDERR_DATA\",\"asset\":\"$_assetPair\",\"source\":\"$_source\",\"time\":\"$(date "+%s")\"}"))
+	if [[ -n "$_price" && "$_price" =~ ^([1-9][0-9]*([.][0-9]+)?|[0][.][0-9]*[1-9]+[0-9]*)$ ]]; then
+		jq -nc \
+			--arg s "$_source" \
+			--arg p "$(LANG=POSIX printf %0.10f "$_price")" \
+			'{($s):$p}'
+	else
+		echo >&2 "{\"level\":\"error\",\"msg\":\"Failed to get asset price\",\"asset\":\"$_assetPair\",\"source\":\"$_source\",\"time\":\"$(date "+%s")\"}"
+	fi
+}
+export -f _mapSetzer
+
+readSourcesWithSetzer()  {
+	local _assetPair="$1"
+	local _setzerAssetPair="$_assetPair"
+	_setzerAssetPair="${_setzerAssetPair/\/}"
+	_setzerAssetPair="${_setzerAssetPair,,}"
+
+	# shellcheck disable=SC2155
+	local _prices=$(setzer sources "$_setzerAssetPair" \
+		| parallel \
+			-j${OMNIA_SOURCE_PARALLEL:-0} \
+			--termseq KILL \
+			--timeout "$OMNIA_SRC_TIMEOUT" \
+			_mapSetzer "$_setzerAssetPair"
+	)
+
+	# shellcheck disable=SC2155
+	local _median=$(getMedian "$(jq -sr 'add|.[]' <<<"$_prices")")
+
+	jq -cs \
+		--arg a "$_assetPair" \
+		--argjson m "$_median" '
+		{ asset: $a
+		, median: $m
+		, sources: .|add
+		}' <<<"$_prices"
+}
+
+readSourcesWithSetzer "$1"

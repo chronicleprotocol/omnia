@@ -17,8 +17,8 @@ readSourcesAndBroadcastAllPriceMessages()  {
 			break
 		fi
 
-		readSource "$_src" "${!_unpublishedPairs[@]}" | \
-		while IFS= read -r _json
+		readSource "$_src" "${!_unpublishedPairs[@]}" \
+		| while IFS= read -r _json
 		do
 			if [[ -z "$_json" ]]; then
 				continue
@@ -53,13 +53,19 @@ readSource() {
 	case "$_src" in
 		setzer)
 			for _assetPair in "${_assetPairs[@]}"; do
-				log "Querying ${_assetPair} prices and calculating median with setzer..."
-				readSourcesWithSetzer "$_assetPair"
+				log "Querying price and calculating median" "source=$_src" "asset=${_assetPair}"
+#				readSourcesWithSetzer "$_assetPair"
+				source-setzer "$_assetPair" 2> >(STDERR_DATA="$(cat)"; [[ -z "$STDERR_DATA" ]] || error "source-setzer [stderr]" "$STDERR_DATA") \
+				| tee >(_data="$(cat)"; verbose --raw "source-setzer" "$(jq -sc <<<"$_data")") \
+				|| error "Failed to get price" "app=source-setzer" "asset=$_assetPair"
 			done
 			;;
 		gofer)
-			log "Querying ${_assetPairs[*]} prices and calculating medians with gofer..."
-			readSourcesWithGofer "${_assetPairs[@]}"
+			log --list "Querying prices and calculating median" "source=$_src" "${_assetPairs[*]}"
+#			readSourcesWithGofer "${_assetPairs[@]}"
+			source-gofer "$@" 2> >(STDERR_DATA="$(cat)"; [[ -z "$STDERR_DATA" ]] || error "source-gofer [stderr]" "$STDERR_DATA") \
+			| tee >(_data="$(cat)"; verbose --raw "source-gofer" "$(jq -sc <<<"$_data")") \
+			|| error --list "Failed to get prices" "app=source-gofer" "config=$GOFER_CONFIG" "$@"
 			;;
 		*)
 			error "Unknown Feed Source: $_src"
