@@ -7,17 +7,17 @@ if [[ -n $OMNIA_DEBUG ]]; then
 fi
 
 cd "$(cd "${0%/*/*}" && pwd)/lib"
-source ./config.sh
-source ./gasprice.sh
-source ./ethereum.sh
-source ./log.sh
-source ./source.sh
-source ./status.sh
-source ./util.sh
-source ./transport.sh
-source ./feed.sh
-source ./relayer.sh
-source ./omnia.sh
+. ./config.sh
+. ./gasprice.sh
+. ./ethereum.sh
+. ./log.sh
+. ./source.sh
+. ./status.sh
+. ./util.sh
+. ./transport.sh
+. ./feed.sh
+. ./relayer.sh
+. ./omnia.sh
 
 initEnv
 if [[ "$OMNIA_MODE" == "RELAYER" || "$OMNIA_MODE" == "RELAY" ]]; then

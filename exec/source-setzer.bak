@@ -3,9 +3,9 @@ set -eo pipefail
 if [[ -n $OMNIA_DEBUG ]]; then set -x; fi
 
 cd "$(cd "${0%/*/*}" && pwd)/lib"
-. ./log.sh
-. ./source.sh
+source ./log.sh
+verbose --list "setzer()" "$@"
 
 export ETH_RPC_URL="$SETZER_ETH_RPC_URL"
 
-readSourcesWithSetzer "$1"
+setzer "$@" 2> >(STDERR_DATA="$(cat)"; [[ -z "$STDERR_DATA" ]] || verbose "setzer [stderr]" "$STDERR_DATA")

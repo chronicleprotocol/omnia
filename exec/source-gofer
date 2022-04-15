@@ -2,8 +2,6 @@
 set -eo pipefail
 if [[ -n $OMNIA_DEBUG ]]; then set -x; fi
 
-cd "$(cd "${0%/*/*}" && pwd)/lib"
-
 gofer price --config "$GOFER_CONFIG" --format ndjson "$@" \
 | jq -c '{
 	asset: (.base+"/"+.quote),

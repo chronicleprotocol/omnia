@@ -55,7 +55,8 @@ readSource() {
 			for _assetPair in "${_assetPairs[@]}"; do
 				log "Querying price and calculating median" "source=$_src" "asset=${_assetPair}"
 #				readSourcesWithSetzer "$_assetPair"
-				source-setzer "$_assetPair" 2> >(STDERR_DATA="$(cat)"; [[ -z "$STDERR_DATA" ]] || error "source-setzer [stderr]" "$STDERR_DATA") \
+#				2> >(STDERR_DATA="$(cat)"; [[ -z "$STDERR_DATA" ]] || error "source-setzer [stderr]" "$STDERR_DATA") \
+				source-setzer "$_assetPair" \
 				| tee >(_data="$(cat)"; verbose --raw "source-setzer" "$(jq -sc <<<"$_data")") \
 				|| error "Failed to get price" "app=source-setzer" "asset=$_assetPair"
 			done
@@ -63,7 +64,8 @@ readSource() {
 		gofer)
 			log --list "Querying prices and calculating median" "source=$_src" "${_assetPairs[*]}"
 #			readSourcesWithGofer "${_assetPairs[@]}"
-			source-gofer "$@" 2> >(STDERR_DATA="$(cat)"; [[ -z "$STDERR_DATA" ]] || error "source-gofer [stderr]" "$STDERR_DATA") \
+#			2> >(STDERR_DATA="$(cat)"; [[ -z "$STDERR_DATA" ]] || error "source-gofer [stderr]" "$STDERR_DATA") \
+			source-gofer "$@" \
 			| tee >(_data="$(cat)"; verbose --raw "source-gofer" "$(jq -sc <<<"$_data")") \
 			|| error --list "Failed to get prices" "app=source-gofer" "config=$GOFER_CONFIG" "$@"
 			;;

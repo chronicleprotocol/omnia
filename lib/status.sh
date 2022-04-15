@@ -93,20 +93,40 @@ isOracleExpired () {
 	[ "$(isExpired "$_lastTime" "$_expirationInterval")" == "true" ] && echo true || echo false
 }
 
+_calcSpread () {
+	local old=$1
+	local new=$2
+
+	local _isZero
+	_isZero=$(bc <<< "${old} == 0")
+
+	local swing
+	if [[ ${_isZero} -eq 0 ]]; then
+		swing=$(bc <<< "scale=10;(${new} - ${old}) / ${old} * 100")
+		echo "$swing"
+	else
+		echo 9999
+	fi
+}
+
 #is spread greater than specified spread limit
 isStale () {
 	local _oldPrice="$1"
 	local _newPrice="$2"
 	local _spreadLimit="$3"
 	local _spread
+
 	verbose "isStale()" "oldPrice=${_oldPrice}" "newPrice=${_newPrice}"
-	_spread=$("source-setzer" spread "$_oldPrice" "$_newPrice")
+
+	_spread=$(_calcSpread "$_oldPrice" "$_newPrice")
 	if ! [[ "$_spread" =~ ^([-]?[1-9][0-9]*([.][0-9]+)?|[-]?[.][0-9]*[1-9][0-9]*|[0]{1})$ ]]; then
 		error "Error - Invalid spread ($_spread)"
 		echo false
 		return 1
 	fi
+
 	verbose "isStale()" "spread=${_spread#-}"
+
 	test=$(bc <<< "${_spread#-} >= ${_spreadLimit}")
 	if [[ ${test} -ne 0 ]]; then
 		verbose "Price is stale, spread is greater than ${_spreadLimit}"

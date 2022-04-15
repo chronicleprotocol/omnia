@@ -1,37 +1,40 @@
 _mapSetzer() {
-	local _assetPair=$1
-	local _source=$2
-	local _price
-	_price=$("source-setzer" price "$_assetPair" "$_source")
+	local _assetPair="$1"
+	local _source="$2"
+
+	[[ -z $_assetPair || -z $_source ]] \
+	&& error "bad _mapSetzer() request" "asset=$_assetPair" "source=$_source" \
+	&& return 1
+
+	# shellcheck disable=SC2155
+	local _price=$(setzer price "$_assetPair" "$_source")
 	if [[ -n "$_price" && "$_price" =~ ^([1-9][0-9]*([.][0-9]+)?|[0][.][0-9]*[1-9]+[0-9]*)$ ]]; then
 		jq -nc \
-			--arg s "$_source" \
-			--arg p "$(LANG=POSIX printf %0.10f "$_price")" \
+			--arg s "$_assetPair@$_source" \
+			--arg p "$(LC_ALL=POSIX printf %0.10f "$_price")" \
 			'{($s):$p}'
 	else
-		echo "{\"level\":\"error\",\"msg\":\"Failed to get asset price\",\"asset\":\"$_assetPair\",\"source\":\"$_source\",\"time\":\"$(date "+%s")\"}" &>2
+		error "failed to get asset price" "asset=$_assetPair" "source=$_source"
+#		echo >&2 "{\"level\":\"error\",\"msg\":\"Failed to get asset price\",\"asset\":\"$_assetPair\",\"source\":\"$_source\",\"time\":\"$(date "+%s")\"}"
 	fi
 }
-export -f _mapSetzer
+#export -f _mapSetzer
 
 readSourcesWithSetzer()  {
 	local _assetPair="$1"
 	local _setzerAssetPair="$1"
 	_setzerAssetPair="${_setzerAssetPair/\/}"
 	_setzerAssetPair="${_setzerAssetPair,,}"
+
+	# shellcheck disable=SC2155
 	local _prices
+	_prices=$(setzer sources "$_setzerAssetPair" \
+	| while IFS= read -r _src; do _mapSetzer "$_setzerAssetPair" "$_src"; done)
 
-	_prices=$("source-setzer" sources "$_setzerAssetPair" \
-		| parallel \
-			-j${OMNIA_SOURCE_PARALLEL:-0} \
-			--termseq KILL \
-			--timeout "$OMNIA_SRC_TIMEOUT" \
-			_mapSetzer "$_setzerAssetPair"
-	)
-
-	local _price
+	# shellcheck disable=SC2155
 	local _median
-	_median=$(getMedian "$(jq -sr 'add|.[]' <<<"$_prices")")
+	_median=$(jq 'add|tonumber' <<<"$_prices" \
+	| jq -s 'sort | if length == 0 then null elif length % 2 == 0 then (.[length/2] + .[length/2-1])/2 else .[length/2|floor] end')
 
 	local _output
 	_output="$(jq -cs \
