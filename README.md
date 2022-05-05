@@ -3,7 +3,7 @@
 [![Omnia Tests](https://github.com/chronicleprotocol/omnia/actions/workflows/test.yml/badge.svg)](https://github.com/chronicleprotocol/omnia/actions/workflows/test.yml)
 [![Build & Push Docker Image](https://github.com/chronicleprotocol/omnia/actions/workflows/docker.yml/badge.svg)](https://github.com/chronicleprotocol/omnia/actions/workflows/docker.yml)
 
-For more information see: https://github.com/makerdao/oracles-v2
+For more information on running oracles see: https://github.com/chronicleprotocol/oracles
 
 ## Working with Docker
 
