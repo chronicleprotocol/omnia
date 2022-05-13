@@ -16,12 +16,12 @@ cd "$(cd "${0%/*/*}" && pwd)/lib"
 . ./util.sh
 . ./transport.sh
 . ./feed.sh
-. ./relayer.sh
+. ./relay.sh
 . ./omnia.sh
 
 initEnv
-if [[ "$OMNIA_MODE" == "RELAYER" || "$OMNIA_MODE" == "RELAY" ]]; then
-	runRelayer
+if [[ "$OMNIA_MODE" == "RELAY" ]]; then
+	runRelay
 elif [[ "$OMNIA_MODE" == "FEED" ]]; then
 	runFeed
 else

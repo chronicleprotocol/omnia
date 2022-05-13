@@ -10,8 +10,8 @@ lib_path="$root_path/lib"
 
 . "$root_path/tap.sh" 2>/dev/null || . "$root_path/test/tap.sh"
 
-# Setting up relayer configuration
-OMNIA_MODE="RELAYER"
+# Setting up relay configuration
+OMNIA_MODE="RELAY"
 
 declare -gA assetInfo
 

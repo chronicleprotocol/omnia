@@ -104,7 +104,7 @@ func NewOmniaRelayProcess(ctx context.Context, params ...string) *OmniaProcess {
 	cmd := exec.CommandContext(ctx, "omnia", params...)
 	cmd.Stdout = &outb
 	cmd.Stderr = &errb
-	cmd.Env = append(os.Environ(), "OMNIA_MODE=RELAYER", "OMNIA_CONFIG=/app/test/e2e/config/relay.conf")
+	cmd.Env = append(os.Environ(), "OMNIA_MODE=RELAY", "OMNIA_CONFIG=/app/test/e2e/config/relay.conf")
 
 	return &OmniaProcess{
 		cmd:    cmd,

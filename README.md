@@ -106,7 +106,7 @@ ok 5 - ETH_GAS_PRIORITY should have value: slow > match ^fast
 ### Running E2E Tests
 
 For E2E tests you need Docker to be installed and some basic predefined tools.
-We use `smocker` for mocking Exchange API requests/responses and local `geth` for omnia relayer tests.
+We use `smocker` for mocking Exchange API requests/responses and local `geth` for omnia relay tests.
 To setup environment you can use this command:
 
 ```bash

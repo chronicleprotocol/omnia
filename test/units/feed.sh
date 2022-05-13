@@ -16,7 +16,7 @@ messages_path="$test_path/messages"
 _config="$test_path/configs/oracle-feed-test.conf"
 _json=$(jq -e . "$_config")
 
-# Setting up relayer configuration
+# Setting up feed configuration
 OMNIA_MODE="FEED"
 OMNIA_SRC_TIMEOUT=60
 ETH_FROM="0x1f8fbe73820765677e68eb6e933dcb3c94c9b708"

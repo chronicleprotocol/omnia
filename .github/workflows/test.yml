@@ -63,6 +63,6 @@ jobs:
       - name: Building Omnia e2e image
         run: docker-compose -f $COMPOSE_FILE build omnia_e2e
       - name: Running Omnia Feed E2E tests
-        run: docker-compose -f $COMPOSE_FILE run --rm omnia_e2e go test -v -parallel 1 -cpu 1 ./feeder
-      - name: Running Omnia Relayer E2E tests
-        run: docker-compose -f $COMPOSE_FILE run --rm omnia_e2e go test -v -parallel 1 -cpu 1 ./relayer
+        run: docker-compose -f $COMPOSE_FILE run --rm omnia_e2e go test -v -parallel 1 -cpu 1 ./feed
+      - name: Running Omnia Relay E2E tests
+        run: docker-compose -f $COMPOSE_FILE run --rm omnia_e2e go test -v -parallel 1 -cpu 1 ./relay

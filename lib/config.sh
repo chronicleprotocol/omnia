@@ -27,15 +27,15 @@ importEnv () {
 	importOptionsEnv "$_json" || return 1
 	importServicesEnv "$_json" || return 1
 
-	if [[ "$OMNIA_MODE" == "RELAYER" || "$OMNIA_MODE" == "RELAY" ]]; then
+	if [[ "$OMNIA_MODE" == "RELAY" ]]; then
 		importFeeds "$_json" || return 1
 	fi
 }
 
 importMode () {
 	local _json="$1"
-	OMNIA_MODE="$(jq -r '.mode' <<<$_json | tr '[:lower:]' '[:upper:]')"
-	[[ "$OMNIA_MODE" =~ ^(FEED|RELAYER|RELAY){1}$ ]] || { error "Error - Invalid Mode param, valid values are 'FEED' and 'RELAYER'"; return 1; }
+	OMNIA_MODE="$(jq -r '.mode' <<<"$_json" | tr '[:lower:]' '[:upper:]')"
+	[[ "$OMNIA_MODE" =~ ^(FEED|RELAY){1}$ ]] || { error "Error - Invalid Mode param, valid values are 'FEED' and 'RELAY'"; return 1; }
 	export OMNIA_MODE
 }
 
@@ -109,7 +109,7 @@ importEthereumEnv () {
 
 	_json=$(jq -S '.ethereum' <<<"$_config")
 
-	[[ "$OMNIA_MODE" == "RELAYER" || "$OMNIA_MODE" == "RELAY" ]] && { importNetwork "$_json" || return 1; }
+	[[ "$OMNIA_MODE" == "RELAY" ]] && { importNetwork "$_json" || return 1; }
 
 	ETH_FROM="${ETH_FROM-$(jq -r '.from' <<<"$_json")}"
 	#this just checks for valid chars and length, NOT checksum!
@@ -127,7 +127,7 @@ importEthereumEnv () {
 	export ETH_PASSWORD
 
 	# Importing Gas Price
-	[[ "$OMNIA_MODE" == "RELAYER" || "$OMNIA_MODE" == "RELAY" ]] && { importGasPrice "$_json" || return 1; }
+	[[ "$OMNIA_MODE" == "RELAY" ]] && { importGasPrice "$_json" || return 1; }
 
 	[[ -z ${errors[*]} ]] || { printf '%s\n' "${errors[@]}"; return 1; }
 }
@@ -162,8 +162,8 @@ importAssetPairsEnv () {
 
 	[[ ${#assetPairs[@]} -eq 0 ]] && { error "Error - Config must have at least 1 asset pair"; return 1; }
 
-	[[ $OMNIA_MODE == "FEED" ]] && { importAssetPairsFeed || return 1; }
-	[[ $OMNIA_MODE == "RELAYER" || "$OMNIA_MODE" == "RELAY" ]] && { importAssetPairsRelayer || return 1; }
+	[[ "$OMNIA_MODE" == "FEED" ]] && { importAssetPairsFeed || return 1; }
+	[[ "$OMNIA_MODE" == "RELAY" ]] && { importAssetPairsRelay || return 1; }
 	true
 }
 
@@ -190,7 +190,7 @@ importAssetPairsFeed () {
 	[[ -z ${errors[*]} ]] || { printf '%s\n' "${errors[@]}"; return 1; }
 }
 
-importAssetPairsRelayer () {
+importAssetPairsRelay () {
 	declare -gA assetInfo
 	local _msgExpiration
 	local _oracle

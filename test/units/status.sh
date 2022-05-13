@@ -45,7 +45,7 @@ assert "isPriceValid returns false for non numeric price" match "false" < <(capt
 assert "isPriceValid returns false for invalid price" match "false" < <(capture isPriceValid .1)
 assert "isPriceValid returns true for valid price" match "true" < <(capture isPriceValid 1.1)
 
-OMNIA_MODE="RELAYER"
+OMNIA_MODE="RELAY"
 assetInfo["BTCUSD"]="0xxxxx,0.5,15500,1800"
 
 # getOracleSpread

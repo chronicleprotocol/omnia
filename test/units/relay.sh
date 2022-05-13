@@ -7,14 +7,14 @@ lib_path="$root_path/lib"
 . "$lib_path/util.sh"
 . "$lib_path/config.sh"
 . "$lib_path/gasprice.sh"
-. "$lib_path/relayer.sh"
+. "$lib_path/relay.sh"
 
 . "$root_path/tap.sh" 2>/dev/null || . "$root_path/test/tap.sh"
 
-# Setting up relayer configuration
-OMNIA_MODE="RELAYER"
+# Setting up relay configuration
+OMNIA_MODE="RELAY"
 
-_json=$(jq -e . "$test_path/configs/oracle-relayer-test.conf")
+_json=$(jq -e . "$test_path/configs/oracle-relay-test.conf")
 importAssetPairsEnv "$_json"
 
 assert "assetPairs assigned" match "3" < <(capture printf ${#assetPairs[@]})

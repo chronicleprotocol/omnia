@@ -9,7 +9,7 @@ lib_path="$root_path/lib"
 
 . "$root_path/lib/tap.sh" 2>/dev/null || . "$root_path/test/tap.sh"
 
-_validConfig="$(jq -c . "$test_path/configs/oracle-relayer-test.conf")"
+_validConfig="$(jq -c . "$test_path/configs/oracle-relay-test.conf")"
 
 # Setting up clean vars
 ETH_GAS_SOURCE=""
@@ -104,7 +104,6 @@ assert "importMode: fails on invalid mode" fail importMode '{"mode":"blahblah"}'
 
 errors=()
 assert "importMode: works correctly on feed" run importMode '{"mode":"feed"}'
-assert "importMode: works correctly on relayer" run importMode '{"mode":"relayer"}'
 assert "importMode: works correctly on relay" run importMode '{"mode":"relay"}'
 
 export OMNIA_MODE=""

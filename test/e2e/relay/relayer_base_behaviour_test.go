@@ -1,4 +1,4 @@
-package relayer
+package relay
 
 import (
 	"context"
@@ -8,23 +8,24 @@ import (
 	"github.com/chronicleprotocol/infestor"
 	"github.com/chronicleprotocol/infestor/origin"
 
-	e2e "github.com/makerdao/setzer-e2e"
 	"github.com/stretchr/testify/suite"
+
+	e2e "github.com/makerdao/setzer-e2e"
 )
 
 const contractAddress = "0x9b637fDF5482340C823930366464c146f318b896"
 
-func TestRelayerBaseBehaviourE2ESuite(t *testing.T) {
-	suite.Run(t, new(RelayerBaseBehaviourE2ESuite))
+func TestRelayBaseBehaviourE2ESuite(t *testing.T) {
+	suite.Run(t, new(RelayBaseBehaviourE2ESuite))
 }
 
-type RelayerBaseBehaviourE2ESuite struct {
+type RelayBaseBehaviourE2ESuite struct {
 	e2e.SmockerAPISuite
 
 	rpc *e2e.EthRPC
 }
 
-func (s *RelayerBaseBehaviourE2ESuite) SetupSuite() {
+func (s *RelayBaseBehaviourE2ESuite) SetupSuite() {
 	var err error
 
 	s.SmockerAPISuite.SetupSuite()
@@ -49,7 +50,7 @@ func (s *RelayerBaseBehaviourE2ESuite) SetupSuite() {
 	s.Require().NoError(err)
 }
 
-func (s *RelayerBaseBehaviourE2ESuite) TestRelayerUpdatesPrice() {
+func (s *RelayBaseBehaviourE2ESuite) TestRelayUpdatesPrice() {
 	s.Omnia = e2e.NewOmniaRelayProcess(s.Ctx)
 
 	s.Require().NoError(s.Transport.Truncate()) // TODO: need to truncate ?
@@ -73,7 +74,7 @@ func (s *RelayerBaseBehaviourE2ESuite) TestRelayerUpdatesPrice() {
 	s.Require().Greater(price, 0.0)
 }
 
-func (s *RelayerBaseBehaviourE2ESuite) TestExpiredMessage() {
+func (s *RelayBaseBehaviourE2ESuite) TestExpiredMessage() {
 	s.Omnia = e2e.NewOmniaRelayProcess(s.Ctx)
 
 	s.Require().NoError(s.Transport.Truncate())
@@ -108,7 +109,7 @@ func (s *RelayerBaseBehaviourE2ESuite) TestExpiredMessage() {
 	s.Require().Equal(0.0, price)
 }
 
-func (s *RelayerBaseBehaviourE2ESuite) TestInvalidPriceMessage() {
+func (s *RelayBaseBehaviourE2ESuite) TestInvalidPriceMessage() {
 	s.Omnia = e2e.NewOmniaRelayProcess(s.Ctx)
 
 	s.Require().NoError(s.Transport.Truncate())
@@ -142,7 +143,7 @@ func (s *RelayerBaseBehaviourE2ESuite) TestInvalidPriceMessage() {
 	s.Require().Equal(0.0, price)
 }
 
-func (s *RelayerBaseBehaviourE2ESuite) TestInvalidMessageSignature() {
+func (s *RelayBaseBehaviourE2ESuite) TestInvalidMessageSignature() {
 	s.Omnia = e2e.NewOmniaRelayProcess(s.Ctx)
 
 	s.Require().NoError(s.Transport.Truncate())

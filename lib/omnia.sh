@@ -24,7 +24,7 @@ initEnv () {
 	echo "Verbose Mode:                      $OMNIA_VERBOSE"
 	echo "Interval:                          $OMNIA_INTERVAL seconds"
 	echo ""
-	if [[ $OMNIA_MODE == "RELAYER" || "$OMNIA_MODE" == "RELAY" ]]; then
+	if [[ "$OMNIA_MODE" == "RELAY" ]]; then
 	  echo "ETHEREUM"
 		echo "  ETH_RPC_URL             = $ETH_RPC_URL"
 		echo "  ETH_FROM                = $ETH_FROM"
@@ -44,7 +44,7 @@ initEnv () {
 	for assetPair in "${assetPairs[@]}"; do
 		printf '   %s\n' "$assetPair"
 
-		[[ $OMNIA_MODE == "RELAYER" || "$OMNIA_MODE" == "RELAY" ]] && \
+		[[ "$OMNIA_MODE" == "RELAY" ]] && \
 		printf '      Oracle Address:              %s\n' "$(getOracleContract "$assetPair")"
 
 		printf '      Message Expiration:          %s seconds\n' "$(getMsgExpiration "$assetPair")"
@@ -52,10 +52,10 @@ initEnv () {
 		[[ $OMNIA_MODE == "FEED" ]] && \
 		printf '      Message Spread:              %s %% \n' "$(getMsgSpread "$assetPair")"
 
-		[[ $OMNIA_MODE == "RELAYER" || "$OMNIA_MODE" == "RELAY" ]] && \
+		[[ "$OMNIA_MODE" == "RELAY" ]] && \
 		printf '      Oracle Expiration:           %s seconds\n' "$(getOracleExpiration "$assetPair")"
 
-		[[ $OMNIA_MODE == "RELAYER" || "$OMNIA_MODE" == "RELAY" ]] && \
+		[[ "$OMNIA_MODE" == "RELAY" ]] && \
 		printf '      Oracle Spread:               %s %% \n' "$(getOracleSpread "$assetPair")"
 	done
 	echo ""
@@ -71,7 +71,7 @@ runFeed () {
 	done
 }
 
-runRelayer () {
+runRelay () {
     while true; do
 		updateOracle
 		verbose "Sleeping $OMNIA_INTERVAL seconds.."
