@@ -7,7 +7,6 @@ messages_path="$test_path/messages"
 . "$lib_path/log.sh"
 . "$lib_path/util.sh"
 . "$lib_path/config.sh"
-. "$lib_path/source.sh"
 . "$lib_path/status.sh"
 . "$lib_path/feed.sh"
 

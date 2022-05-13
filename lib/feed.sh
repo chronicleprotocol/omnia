@@ -29,6 +29,7 @@ readSourcesAndBroadcastAllPriceMessages()  {
 			_median=$(jq -r .median <<<"$_json")
 			local _sources
 			_sources=$(jq -rS '.sources' <<<"$_json")
+
 			# shellcheck disable=SC2155
 			local _message=$(validateAndConstructMessage "$_assetPair" "$_median"	"$_sources")
 
@@ -53,23 +54,14 @@ readSource() {
 	verbose --list "readSource" "src=$_src" "${_assetPairs[@]}"
 
 	case "$_src" in
-		setzer)
+		setzer|gofer)
 			for _assetPair in "${_assetPairs[@]}"; do
 				log "Querying price and calculating median" "source=$_src" "asset=${_assetPair}"
-#				readSourcesWithSetzer "$_assetPair"
-#				2> >(STDERR_DATA="$(cat)"; [[ -z "$STDERR_DATA" ]] || error "source-setzer [stderr]" "$STDERR_DATA") \
-				"source-setzer" "$_assetPair" \
-				| tee >(_data="$(cat)"; [[ -z "$_data" ]] || verbose --raw "source-setzer" "$(jq -sc <<<"$_data")") \
-				|| error "Failed to get price" "app=source-setzer" "asset=$_assetPair"
+
+				"source-$_src" "$_assetPair" \
+				| tee >(_data="$(cat)"; [[ -z "$_data" ]] || verbose --raw "source-$_src" "$(jq -sc <<<"$_data")") \
+				|| error "Failed to get price" "app=source-$_src" "asset=$_assetPair"
 			done
-			;;
-		gofer)
-			log --list "Querying prices and calculating median" "source=$_src" "${_assetPairs[*]}"
-#			readSourcesWithGofer "${_assetPairs[@]}"
-#			2> >(STDERR_DATA="$(cat)"; [[ -z "$STDERR_DATA" ]] || error "source-gofer [stderr]" "$STDERR_DATA") \
-			"source-gofer" "${_assetPairs[@]}" \
-			| tee >(_data="$(cat)"; [[ -z "$_data" ]] || verbose --raw "source-gofer" "$(jq -sc <<<"$_data")") \
-			|| error --list "Failed to get prices" "app=source-gofer" "config=$GOFER_CONFIG" "${_assetPairs[@]}"
 			;;
 		*)
 			error "Unknown Feed Source: $_src"
