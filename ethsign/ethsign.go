@@ -203,7 +203,7 @@ func main() {
 	app := cli.NewApp()
 	app.Name = "ethsign"
 	app.Usage = "sign Ethereum transactions using a JSON keyfile"
-	app.Version = "0.16.1"
+	app.Version = "0.18.0"
 	app.Commands = []cli.Command{
 		cli.Command{
 			Name:    "list-accounts",

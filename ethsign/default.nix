@@ -2,7 +2,7 @@
 
 buildGoModule rec {
   name = "ethsign-${version}";
-  version = "0.17.1";
+  version = "0.18.0";
 
   src = ./.;
 
