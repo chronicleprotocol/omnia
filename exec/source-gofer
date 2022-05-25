@@ -2,7 +2,7 @@
 set -eo pipefail
 if [[ -n $OMNIA_DEBUG ]]; then set -x; fi
 
-gofer price --config "$GOFER_CONFIG" --format ndjson "$@" \
+gofer price --config "$GOFER_CONFIG" --format ndjson "$1" \
 | jq -c '{
 	asset: (.base+"/"+.quote),
 	median: .price,

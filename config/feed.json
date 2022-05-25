@@ -15,7 +15,7 @@
     "setzerEthRpcUrl": "https://mainnet.infura.io/v3/fac98e56ea7e49608825dfc726fab703"
   },
   "sources":["gofer","setzer"],
-  "transports":["transport-spire","transport-ssb-rpc"],
+  "transports":["spire","ssb-rpc"],
   "pairs": {
     "BAT/USD":{"msgExpiration":300,"msgSpread":0.5},
     "BTC/USD":{"msgExpiration":300,"msgSpread":0.5},

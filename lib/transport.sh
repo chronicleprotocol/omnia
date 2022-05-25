@@ -4,7 +4,7 @@ transportPublish() {
 	local _succ=0
 	for _publisher in "${OMNIA_TRANSPORTS[@]}"; do
 		log "Publishing $_assetPair price message with $_publisher"
-		if "$_publisher" push "$_message"; then
+		if "transport-$_publisher" push "$_message"; then
 			((_succ++))
 		else
 			error "Failed publishing message" "asset=$_assetPair" "transport=$_publisher"
@@ -25,7 +25,7 @@ transportPull() {
 
 	for _puller in "${OMNIA_TRANSPORTS[@]}"; do
 		log "Pulling $_assetPair price message with $_puller"
-		if _msg=$("$_puller" pull "$_feed" "$_assetPair" | jq -c)
+		if _msg=$("transport-$_puller" pull "$_feed" "$_assetPair" | jq -c)
 		then
 			if [[ -n "$_msg" ]]
 			then

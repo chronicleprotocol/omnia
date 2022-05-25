@@ -14,7 +14,7 @@
     "interval": 60,
     "msgLimit": 20
   },
-  "transports":["transport-spire","transport-ssb-rpc"],
+  "transports":["spire","ssb-rpc"],
   "pairs": {
     "BATUSD": {
       "oracle": "0x16EeC2D83c58a51Ad515b8BfC195183a15705474",

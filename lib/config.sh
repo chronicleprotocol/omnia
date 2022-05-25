@@ -41,19 +41,19 @@ importMode () {
 
 importSources () {
 	local _json="$1"
-	readarray -t OMNIA_FEED_SOURCES < <(jq -r '.sources[]' <<<$_json)
+	readarray -t OMNIA_FEED_SOURCES < <(jq -r '.sources[]' <<<"$_json")
 	[[ "${#OMNIA_FEED_SOURCES[@]}" -gt 0 ]] || OMNIA_FEED_SOURCES=("gofer" "setzer")
 }
 
 importTransports () {
 	local _json="$1"
-	readarray -t OMNIA_TRANSPORTS < <(jq -r '.transports[]' <<<$_json)
-	[[ "${#OMNIA_TRANSPORTS[@]}" -gt 0 ]] || OMNIA_TRANSPORTS=("transport-spire" "transport-ssb")
+	readarray -t OMNIA_TRANSPORTS < <(jq -r '.transports[]' <<<"$_json")
+	[[ "${#OMNIA_TRANSPORTS[@]}" -gt 0 ]] || OMNIA_TRANSPORTS=("spire" "ssb")
 }
 
 # Actual call to eth-rpc was moved to separate function because it helps to mock it in unit tests.
 getLatestBlock () {
-	echo $(ethereum --rpc-url "$1" block latest number)
+	ethereum --rpc-url "$1" block latest number
 }
 
 importNetwork () {
@@ -76,7 +76,7 @@ importNetwork () {
 			;;
 	esac
 
-	[[ $(getLatestBlock $ETH_RPC_URL) =~ ^[1-9]{1,}[0-9]*$ ]] || errors+=("Error - Unable to connect to Ethereum network.\nValid options are: ethlive, mainnet, ropsten, kovan, rinkeby, goerli, or a custom endpoint")
+	[[ $(getLatestBlock "$ETH_RPC_URL") =~ ^[1-9]{1,}[0-9]*$ ]] || errors+=("Error - Unable to connect to Ethereum network.\nValid options are: ethlive, mainnet, ropsten, kovan, rinkeby, goerli, or a custom endpoint")
 	[[ -z ${errors[*]} ]] || { printf '%s\n' "${errors[@]}"; return 1; }
 	export ETH_RPC_URL
 }
