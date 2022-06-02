@@ -72,14 +72,14 @@ readSource() {
 
 constructMessage() {
 	local _assetPair="${1/\/}"
-	local _price="$2"
-	local _priceHex="$3"
-	local _time="$4"
-	local _timeHex="$5"
-	local _hash="$6"
-	local _signature="$7"
-	local _sourcePrices="$8"
-	local _starkSignatureR="$9"
+	local _price="${2}"
+	local _priceHex="${3}"
+	local _time="${4}"
+	local _timeHex="${5}"
+	local _hash="${6}"
+	local _signature="${7}"
+	local _sourcePrices="${8}"
+	local _starkSignatureR="${9}"
 	local _starkSignatureS="${10}"
 	local _starkPublicKey="${11}"
 	local _starkSignature
