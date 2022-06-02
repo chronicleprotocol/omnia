@@ -1,6 +1,5 @@
 #!/bin/bash
 test_path=$(cd "${BASH_SOURCE[0]%/*}"; pwd)
-export test_path
 root_path=$(cd "$test_path/../.."; pwd)
 lib_path="$root_path/lib"
 
@@ -9,6 +8,7 @@ lib_path="$root_path/lib"
 
 . "$root_path/tap.sh" 2>/dev/null || . "$root_path/test/tap.sh"
 
+export test_path
 transport-mock() {
 	case "$1" in
 		push|publish)
@@ -65,35 +65,35 @@ OMNIA_SRC_TIMEOUT=60
 transportMessage="$(jq -c . "$test_path/messages/transport-message.json")"
 
 rm -f $wdir/output
-OMNIA_TRANSPORTS=(transport-mock)
+OMNIA_TRANSPORTS=(mock)
 assert "publish to transport" run transportPublish "BTC/USD" "$transportMessage"
 assert "type should be BTCUSD" json '.type' <<<'"BTCUSD"'
 assert "time should be set" json '.time' <<<"1607032851"
 
 rm -f $wdir/output
-OMNIA_TRANSPORTS=(transport-mock transport-mock-other)
+OMNIA_TRANSPORTS=(mock mock-other)
 assert "publish to two transports" run transportPublish "BTC/USD" "$transportMessage"
 assert "type should be two BTCUSD" json -s '[.[].type]' <<<'["BTCUSD","BTCUSD"]'
 assert "time should be separate times " json -s '[.[].time]' <<<"[1607032851,1607032861]"
 
-OMNIA_TRANSPORTS=(transport-mock-fail)
+OMNIA_TRANSPORTS=(mock-fail)
 assert "should fail if transport exits non-zero" fail transportPublish "BTC/USD" "$transportMessage"
 
-OMNIA_TRANSPORTS=(transport-mock transport-mock-latest)
+OMNIA_TRANSPORTS=(mock mock-latest)
 assert "pull message from two transports" run_json transportPull f33d1d "BTC/USD"
 assert "type should be BTCUSD" json '.type' <<<'"BTCUSD"'
 assert "time should be from latest message" json '.time' <<<"1607032861"
 
-OMNIA_TRANSPORTS=(transport-mock-mallformed)
+OMNIA_TRANSPORTS=(mock-mallformed)
 assert "should fail if transport returns mallformed JSON" fail transportPull f33d1d "BTC/USD"
 
-OMNIA_TRANSPORTS=(transport-mock-empty)
+OMNIA_TRANSPORTS=(mock-empty)
 assert "should fail if transport returns empty JSON" fail transportPull f33d1d "BTC/USD"
 
-OMNIA_TRANSPORTS=(transport-mock-fail)
+OMNIA_TRANSPORTS=(mock-fail)
 assert "should fail if transport returns non-zero exit code" fail transportPull f33d1d "BTC/USD"
 
-OMNIA_TRANSPORTS=(transport-mock-fail transport-mock)
+OMNIA_TRANSPORTS=(mock-fail mock)
 assert "pull message from one transport that fails and one that succeeds" run_json transportPull f33d1d "BTC/USD"
 assert "type should be BTCUSD" json '.type' <<<'"BTCUSD"'
 assert "time should be from latest message" json '.time' <<<"1607032851"
