@@ -160,7 +160,7 @@ validateAndConstructMessage() {
 	fi
 
 	#Convert asset pair to hex
-	assetPairHex=$(ethereum --to-bytes32 "$(seth --from-ascii "$_assetPair")")
+	assetPairHex=$(ethereum --to-bytes32 "$(ethereum --from-ascii "$_assetPair")")
 	assetPairHex=${assetPairHex#"0x"}
 	if [[ ! "$assetPairHex" =~ ^[0-9a-fA-F]{64}$ ]]; then
 		error "Failed to convert asset pair to hex:"
