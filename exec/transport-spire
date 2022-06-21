@@ -13,10 +13,7 @@ case "$1" in
 				age: .time,
 				r: .signature[0:64],
 				s: .signature[64:128],
-				v: .signature[128:130],
-				stark_r:.starkSignature.r,
-				stark_s:.starkSignature.s,
-				stark_pk:.starkSignature.publicKey
+				v: .signature[128:130]
 			},
 			trace: .sources
 		}' <<<"$2")"

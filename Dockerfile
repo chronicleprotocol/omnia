@@ -49,7 +49,6 @@ COPY --from=go-builder \
 COPY ./docker/geth/bin/hevm-0.48.1 /usr/local/bin/hevm
 
 RUN pip install --no-cache-dir mpmath sympy ecdsa==0.16.0
-COPY ./docker/starkware/ /opt/starkware/
 
 COPY ./bin /opt/omnia/bin/
 COPY ./exec /opt/omnia/exec/
@@ -98,9 +97,8 @@ RUN printf 'will cite' | parallel --citation 1>/dev/null 2>/dev/null; exit 0
 # Here we have set of different pathes included:
 # - /opt/seth - For `seth` executable
 # - /opt/setzer - For `setzer` executable
-# - /opt/starkware - For Starkware python dependency
 # - /opt/omnia/bin - Omnia executables
 # - /opt/omnia/exec - Omnia transports executables
-ENV PATH="/opt/seth/bin:/opt/setzer/bin:/opt/starkware:/opt/omnia/bin:/opt/omnia/exec:${PATH}"
+ENV PATH="/opt/seth/bin:/opt/setzer/bin:/opt/omnia/bin:/opt/omnia/exec:${PATH}"
 
 CMD ["omnia"]

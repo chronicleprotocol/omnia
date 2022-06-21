@@ -22,8 +22,6 @@ ETH_FROM="0x1f8fbe73820765677e68eb6e933dcb3c94c9b708"
 ETH_KEYSTORE="$test_path/../resources/keys"
 ETH_PASSWORD="$test_path/../resources/password"
 
-importStarkwareEnv
-
 # check configuration requirement before setting everything up
 assert "readSourcesAndBroadcastAllPriceMessages should fail without configuration" fail readSourcesAndBroadcastAllPriceMessages
 
