@@ -6,7 +6,7 @@ buildGoModule rec {
 
   src = ./.;
 
-  vendorSha256 = "13n6ymfri3gml2r207567xaq6xqbhcgc13lv04gy0wznjfsfmphp";
+  vendorSha256 = "ViEzwV4XcoxLzzJrwYxtV5YBm5Q1CLGO7iUd/l1GXDE=";
 
   meta = {
     homepage = http://github.com/dapphub/dapptools;
