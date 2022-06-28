@@ -5,6 +5,16 @@
 
 For more information on running oracles see: https://github.com/chronicleprotocol/oracles
 
+## Quickstart
+
+Some convenience targets for `make` are available. If you have Docker installed, you can do
+
+```
+make build          # build all the images
+make run            # run images after they're built
+make test           # build and run integration tests
+```
+
 ## Working with Docker
 
 We introduced Docker environment for local omnia development.

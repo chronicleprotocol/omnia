@@ -50,7 +50,7 @@ func (s *FeedBaseBehaviourE2ESuite) TestPartialInvalidPricesLessThanMin() {
 
 	empty, err := s.Transport.IsEmpty()
 	s.Assert().NoError(err)
-	s.Assert().True(empty, "E2E Transport send message, but should not")
+	s.Assert().True(empty, "E2E Transport sent message, but should not have.")
 }
 
 func (s *FeedBaseBehaviourE2ESuite) TestAllInvalidPrices() {

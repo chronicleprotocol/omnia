@@ -84,6 +84,7 @@ func (t *Transport) IsEmpty() (bool, error) {
 	if t.filePath == "" {
 		return false, fmt.Errorf("IsEmpty: file path is not set")
 	}
+
 	content, err := os.ReadFile(t.filePath)
 	if err != nil {
 		return false, fmt.Errorf("IsEmpty: failed to check content: %w", err)

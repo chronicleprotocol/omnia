@@ -6,21 +6,14 @@ import (
 )
 
 type OmniaMessage struct {
-	Type           string                     `json:"type"`
-	Version        string                     `json:"version"`
-	Price          float64                    `json:"price"`
-	PriceHex       string                     `json:"priceHex"`
-	Time           int64                      `json:"time"`
-	Hash           string                     `json:"hash"`
-	Signature      string                     `json:"signature"`
-	StarkSignature OmniaMessageStarkSignature `json:"starkSignature"`
-	Sources        map[string]string          `json:"sources"`
-}
-
-type OmniaMessageStarkSignature struct {
-	R         string `json:"r"`
-	S         string `json:"s"`
-	PublicKey string `json:"publicKey"`
+	Type      string            `json:"type"`
+	Version   string            `json:"version"`
+	Price     float64           `json:"price"`
+	PriceHex  string            `json:"priceHex"`
+	Time      int64             `json:"time"`
+	Hash      string            `json:"hash"`
+	Signature string            `json:"signature"`
+	Sources   map[string]string `json:"sources"`
 }
 
 func NewOmniaMessage(pair string, price float64) (*OmniaMessage, error) {

@@ -79,23 +79,9 @@ constructMessage() {
 	local _hash="${6}"
 	local _signature="${7}"
 	local _sourcePrices="${8}"
-	local _starkSignatureR="${9}"
-	local _starkSignatureS="${10}"
-	local _starkPublicKey="${11}"
-	local _starkSignature
 	local _jqArgs=()
 	local _json
 
-	#format starkware sig
-	_starkSignature=(
-		--arg r "$_starkSignatureR"
-		--arg s "$_starkSignatureS"
-		--arg publicKey "$_starkPublicKey"
-	)
-
-	if ! _starkSignatureJson=$(jq -nce  "${_starkSignature[@]}" '{r: $r, s:$s, publicKey:$publicKey}'); then
-		error "failed to generate stark signature json"
-	fi
 
 	# compose jq message arguments
 	_jqArgs=(
@@ -108,11 +94,10 @@ constructMessage() {
 		--arg hash "${_hash:2}"
 		--arg signature "${_signature:2}"
 		--argjson sourcePrices "$_sourcePrices"
-		--argjson starkSignature "$_starkSignatureJson"
 	)
 
 	# generate JSON msg
-	if ! _json=$(jq -nce "${_jqArgs[@]}" '{type: $assetPair, version: $version, price: $price | tonumber, priceHex: $priceHex, time: $time | tonumber, timeHex: $timeHex, hash: $hash, signature: $signature, sources: $sourcePrices, starkSignature: $starkSignature}'); then
+	if ! _json=$(jq -nce "${_jqArgs[@]}" '{type: $assetPair, version: $version, price: $price | tonumber, priceHex: $priceHex, time: $time | tonumber, timeHex: $timeHex, hash: $hash, signature: $signature, sources: $sourcePrices }'); then
 			error "failed to generate JSON msg"
 			return 1
 	fi
@@ -184,26 +169,7 @@ validateAndConstructMessage() {
 		return 1
 	fi
 
-	#generate stark hash message
-	assetPairHexShortened=$(echo "$assetPairHex" | cut -c1-32)
-	starkHash=$("$STARK_CLI" --method "hash" --time "$timeHex" --price "$medianHex" --oracle "4d616b6572" --asset "$assetPairHexShortened")
-	if [[ ! "$starkHash" =~ ^[0-9a-fA-F]{1,64}$ ]]; then
-		error "failed to generate valid stark hash"
-		debug "Invalid Hash" "hash=$starkHash" "timestampHex=$timeHex" "assetPairHex=$assetPairHexShortened"
-		return 1
-	fi
-
-	#generate stark sig
-	starkSig=$("$STARK_CLI" --method "sign" --data "$starkHash" --key "$STARK_PRIVATE_KEY")
-	if [[ ! "$starkSig" =~ ^0x[0-9a-f]{1,64}[[:space:]]0x[0-9a-f]{1,64}$ ]]; then
-		error "Failed to generate valid stark signature"
-		debug "Invalid Signature" "sig=$starkSig" "hash=$starkHash"
-		return 1
-	fi
-	starkSigR=$(echo "$starkSig" | cut -d " " -f1)
-	starkSigS=$(echo "$starkSig" | cut -d " " -f2)
-
 	verbose "Constructing message..."
 	constructMessage "$_assetPair" "$median" "$medianHex" "$time" "$timeHex" \
-		"$hash" "$sig" "$sourcePrices" "$starkSigR" "$starkSigS" "$STARK_PUBLIC_KEY"
+		"$hash" "$sig" "$sourcePrices"
 }

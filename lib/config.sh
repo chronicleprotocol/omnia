@@ -22,7 +22,6 @@ importEnv () {
 	importSources "$_json" || return 1
 	importTransports "$_json" || return 1
 	importEthereumEnv "$_json" || return 1
-	importStarkwareEnv "$_json" || return 1
 	importAssetPairsEnv "$_json" || return 1
 	importOptionsEnv "$_json" || return 1
 	importServicesEnv "$_json" || return 1
@@ -130,25 +129,6 @@ importEthereumEnv () {
 	[[ "$OMNIA_MODE" == "RELAY" ]] && { importGasPrice "$_json" || return 1; }
 
 	[[ -z ${errors[*]} ]] || { printf '%s\n' "${errors[@]}"; return 1; }
-}
-
-importStarkwareEnv() {
-	verbose "Importing Starkware signature keys"
-	local _starkdata
-	local _enthropy
-	local _seed
-
-	STARK_CLI="${STARK_CLI:-stark_cli.py}"
-	export STARK_CLI
-
-	_starkdata="537461726b4b657944657269766174696f6e" #StarkKeyDerivation
-	_enthropy=$(signMessage "$_starkdata")
-	_seed=$(keccak256Hash "$_enthropy" | cut -c3-)
-	STARK_PRIVATE_KEY="$( printf 'obase=16; ibase=16; %s / %s\n' "${_seed^^}" 20 | BC_LINE_LENGTH=0 bc )"
-	export STARK_PRIVATE_KEY
-
-	STARK_PUBLIC_KEY=$($STARK_CLI --method "get_public" --key "$STARK_PRIVATE_KEY")
-	export STARK_PUBLIC_KEY
 }
 
 importAssetPairsEnv () {
