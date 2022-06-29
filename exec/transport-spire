@@ -18,7 +18,8 @@ case "$1" in
 				stark_s:.starkSignature.s,
 				stark_pk:.starkSignature.publicKey
 			},
-			trace: .sources
+			trace: .sources,
+			version: .version
 		}' <<<"$2")"
 		spire push -c "$SPIRE_CONFIG" price <<<"$_msg" -v info 2> >(STDERR_DATA="$(cat)"; [[ -z "$STDERR_DATA" ]] || verbose "spire [stderr]" "$STDERR_DATA") || exit $?
 		;;
