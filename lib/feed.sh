@@ -100,7 +100,7 @@ constructMessage() {
 	# compose jq message arguments
 	_jqArgs=(
 		--arg assetPair "$_assetPair"
-		--arg version "$OMNIA_VERSION"
+		--arg version "$ORACLE_VERSION"
 		--arg price "$_price"
 		--arg priceHex "$_priceHex"
 		--arg time "$_time"
