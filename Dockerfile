@@ -1,4 +1,4 @@
-FROM golang:1.17-alpine3.15 as go-builder
+FROM golang:1.18-alpine3.16 as go-builder
 RUN apk --no-cache add git
 
 ARG CGO_ENABLED=0
@@ -19,7 +19,7 @@ RUN git clone https://github.com/chronicleprotocol/omnia.git . \
 
 # Building gofer & spire
 WORKDIR /go/src/oracle-suite
-ARG ORACLE_SUITE_REF="tags/v0.4.6"
+ARG ORACLE_SUITE_REF="tags/v0.5.2"
 RUN git clone https://github.com/chronicleprotocol/oracle-suite.git . \
   && git checkout --quiet ${ORACLE_SUITE_REF}
 
