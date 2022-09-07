@@ -62,16 +62,18 @@ importNetwork () {
 	[[ -z "$INFURA_KEY" ]] || [[ "$INFURA_KEY" =~ ^[0-9a-f]{32}$ ]] || errors+=("Error - Invalid Infura Key")
 	export INFURA_KEY
 
+	local network
 	network="$(echo "$_json" | jq -r .network)"
-	case "${network,,}" in
+	network="${network,,}"
+	case "${network}" in
 		ethlive|mainnet)
-			ETH_RPC_URL=https://mainnet.infura.io/v3/$INFURA_KEY
+			ETH_RPC_URL="https://mainnet.infura.io/v3/$INFURA_KEY"
 			;;
 		ropsten|kovan|rinkeby|goerli)
-			ETH_RPC_URL=https://${network,,}.infura.io/v3/$INFURA_KEY
+			ETH_RPC_URL="https://${network}.infura.io/v3/$INFURA_KEY"
 			;;
 		*)
-			ETH_RPC_URL=$network
+			ETH_RPC_URL="$network"
 			;;
 	esac
 
