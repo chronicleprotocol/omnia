@@ -56,6 +56,7 @@ pushOraclePrice () {
 		local _gasParams
 		_gasParams=(--gas-price "${_fees[0]}")
 		[[ $ETH_TX_TYPE -eq 2 ]] && _gasParams+=(--prio-fee "${_fees[1]}")
+		_gasParams+=(--gas 300000)
 
 		log "Sending tx..."
 		tx=$(ethereum --rpc-url "$ETH_RPC_URL" \
