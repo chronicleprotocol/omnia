@@ -54,13 +54,12 @@ pushOraclePrice () {
 		fi
 
 		local _gasParams
-		_gasParams=(--gas-price "${_fees[0]}")
+		_gasParams=(--rpc-url "$ETH_RPC_URL" --gas-price "${_fees[0]}")
 		[[ $ETH_TX_TYPE -eq 2 ]] && _gasParams+=(--prio-fee "${_fees[1]}")
-		_gasParams+=(--gas 300000)
+		_gasParams+=(--gas "$ETH_GAS")
 
 		log "Sending tx..."
-		tx=$(ethereum --rpc-url "$ETH_RPC_URL" \
-				"${_gasParams[@]}" \
+		tx=$(ethereum "${_gasParams[@]}" \
 				send --async "$_oracleContract" 'poke(uint256[] memory,uint256[] memory,uint8[] memory,bytes32[] memory,bytes32[] memory)' \
 				"[$(join "${allPrices[@]}")]" \
 				"[$(join "${allTimes[@]}")]" \

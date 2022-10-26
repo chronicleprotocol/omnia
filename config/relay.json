@@ -12,7 +12,8 @@
   ],
   "options": {
     "interval": 60,
-    "msgLimit": 20
+    "msgLimit": 20,
+    "ethGas": 200000
   },
   "transports":["spire","ssb-rpc"],
   "pairs": {

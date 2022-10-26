@@ -12,7 +12,7 @@
     "setzerTimeout": 10,
     "setzerCacheExpiry": 120,
     "setzerMinMedian": 3,
-    "setzerEthRpcUrl": "https://mainnet.infura.io/v3/fac98e56ea7e49608825dfc726fab703"
+    "setzerEthRpcUrl": ""
   },
   "sources":["gofer","setzer"],
   "transports":["spire","ssb-rpc"],
