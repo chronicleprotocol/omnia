@@ -30,7 +30,7 @@ initEnv () {
 		echo "  ETH_RPC_URL             = $ETH_RPC_URL"
 		echo "  ETH_FROM                = $ETH_FROM"
 		echo "  ETH_GAS_SOURCE          = $ETH_GAS_SOURCE"
-		echo "  ETH_MAXPRICE_MULTIPLIER = $ETH_MAXPRICE_MULTIPLIER"
+		echo "  ETH_GAS                 = $ETH_GAS"
 		echo "  ETH_MAXPRICE_MULTIPLIER = $ETH_MAXPRICE_MULTIPLIER"
 		[[ $ETH_GAS_SOURCE != "node" ]] && \
 		echo "  ETH_GAS_PRIORITY        = $ETH_GAS_PRIORITY"
