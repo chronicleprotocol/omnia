@@ -278,7 +278,7 @@ importOptionsEnv () {
 		[[ -n "$SETZER_ETH_RPC_URL" ]] || errors+=("Error - Setzer ethereum RPC address is not set.")
 		export SETZER_ETH_RPC_URL
 	elif [[ "$OMNIA_MODE" == "RELAY" ]]; then
-		ETH_GAS=$(echo "$_json" | jq -r '.ethGas')
+		ETH_GAS=$(echo "$_json" | jq -r '.ethGas // ""')
 		[[ -n "$ETH_GAS" ]] || ETH_GAS=200000
 		export ETH_GAS
 	fi
