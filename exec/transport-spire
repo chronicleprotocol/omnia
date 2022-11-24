@@ -18,12 +18,12 @@ case "$1" in
 			trace: .sources,
 			version: .version
 		}' <<<"$2")"
-		spire push -c "$SPIRE_CONFIG" price <<<"$_msg" -v info 2> >(STDERR_DATA="$(cat)"; [[ -z "$STDERR_DATA" ]] || verbose "spire push -c $SPIRE_CONFIG price -v debug <<<'$_msg' [stderr]>" "$STDERR_DATA") || exit $?
+		spire push -c "$SPIRE_CONFIG" price <<<"$_msg" -v info 2> >( STDERR_DATA="$(cat)"; [[ -z "$STDERR_DATA" ]] || verbose --raw "spire push -c $SPIRE_CONFIG price -v debug" $_msg "[stderr]>" "$STDERR_DATA") || exit $?
 		;;
 	pull)
 		_assetPair="$3"
 		_feedId="$2"
-		_msg="$(spire pull -c "$SPIRE_CONFIG" price "$_assetPair" "$_feedId" -v info 2> >(STDERR_DATA="$(cat)"; [[ -z "$STDERR_DATA" ]] || verbose "spire pull -c $SPIRE_CONFIG price $_assetPair $_feedId -v debug [stderr]>" "$STDERR_DATA"))" || exit $?
+		_msg="$(spire pull -c "$SPIRE_CONFIG" price "$_assetPair" "$_feedId" -v info 2> >( STDERR_DATA="$(cat)"; [[ -z "$STDERR_DATA" ]] || verbose --raw "spire pull -c $SPIRE_CONFIG price $_assetPair $_feedId -v debug" "[stderr]>" "$STDERR_DATA"))" || exit $?
 		_priceHex="$(cast --to-uint256 "$(jq -r '.price.val' <<<"$_msg")" | sed s/^0x//)"
 		_timeHex="$(cast --to-uint256 "$(jq -r '.price.age' <<<"$_msg")" | sed s/^0x//)"
 		jq -c --arg ph "$_priceHex" --arg th "$_timeHex" '{
