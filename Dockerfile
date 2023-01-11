@@ -47,7 +47,7 @@ COPY ./lib /opt/omnia/lib/
 COPY ./version /opt/omnia/version
 
 # Installing setzer
-ARG SETZER_REF="tags/v0.6.1"
+ARG SETZER_REF="tags/v0.7.0"
 RUN git clone https://github.com/chronicleprotocol/setzer.git \
   && cd setzer \
   && git checkout --quiet ${SETZER_REF} \

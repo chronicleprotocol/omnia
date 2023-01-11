@@ -94,9 +94,8 @@ func (s *FeedBaseBehaviourE2ESuite) TestMinValuablePrices() {
 	err := infestor.NewMocksBuilder().
 		Reset().
 		Add(origin.NewExchange("bitstamp").WithSymbol("BTC/USD").WithPrice(1)).
-		Add(origin.NewExchange("ftx").WithSymbol("BTC/USD").WithPrice(1)).
+		Add(origin.NewExchange("binance_us").WithSymbol("BTC/USD").WithPrice(1)).
 		Add(origin.NewExchange("coinbase").WithSymbol("BTC/USD").WithPrice(1)).
-		Add(origin.NewExchange("binance_us").WithSymbol("BTC/USD").WithStatusCode(http.StatusConflict)).
 		Add(origin.NewExchange("gemini").WithSymbol("BTC/USD").WithStatusCode(http.StatusConflict)).
 		Add(origin.NewExchange("kraken").WithSymbol("XXBT/ZUSD").WithStatusCode(http.StatusConflict)).
 		Deploy(s.API)
