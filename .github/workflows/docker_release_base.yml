@@ -4,13 +4,16 @@ on:
   push: 
     branches: 
       - master
+      - develop
 jobs:
   build:
     runs-on: ubuntu-latest
     env:
       DOCKER_BUILDKIT: 1
     steps:
-      - uses: actions/checkout@v2.3.5
+      - uses: actions/checkout@v3
+        with:
+          ref: 'develop'
 
       - name: Docker Omnia Base image metadata
         id: meta
