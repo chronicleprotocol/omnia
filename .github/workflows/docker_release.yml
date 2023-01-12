@@ -11,7 +11,7 @@ jobs:
     env:
       DOCKER_BUILDKIT: 1
     steps:
-      - uses: actions/checkout@v2.3.5
+      - uses: actions/checkout@v3
 
       - name: Docker Omnia metadata
         id: meta

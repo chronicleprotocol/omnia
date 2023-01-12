@@ -3,8 +3,7 @@ on:
   workflow_dispatch: # Allow manual trigger
   workflow_run:
     workflows: ["Omnia Tests"] # Depend on success from tests
-    types:
-      - completed
+    types: [completed]
     branches: 
       - develop
 
@@ -49,7 +48,7 @@ jobs:
       #     cache-to: type=gha,mode=max
 
       - name: Build and Publish Omnia DEV Image to Github Packages
-        if: ${{ github.event.workflow_run.conclusion == 'success' }} # Only if tests passed
+        if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch'}} # Only if tests passed or triggered manually
         uses: docker/build-push-action@v3
         with:
           context: .
