@@ -87,7 +87,7 @@ publishMsg() {
 			| jq -c .
 	fi
 }
-STDERR_DATA="$(cat)"; [[ -z "$STDERR_DATA" ]] || verbose --raw "ethsign [stderr]" "#=$STDERR_DATA"
+
 _json=$(jq -e . "$OMNIA_CONFIG")
 {
 	importMode "$_json"
