@@ -10,7 +10,7 @@ jobs:
     env:
       DOCKER_BUILDKIT: 1
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v2.3.5
 
       - name: Docker Omnia Base image metadata
         id: meta
@@ -22,7 +22,6 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
-
       - name: Set up QEMU
         uses: docker/setup-qemu-action@master
         with:
@@ -36,7 +35,6 @@ jobs:
           config-inline: |
             [worker.oci]
               max-parallelism = 1 
-
       - name: Set Swap Space
         uses: pierotofy/set-swap-space@master
         with:
