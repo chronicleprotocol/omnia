@@ -104,7 +104,7 @@ assert "importMode: fails on invalid mode" fail importMode '{"mode":"blahblah"}'
 
 errors=()
 assert "importMode: works correctly on feed" run importMode '{"mode":"feed"}'
-assert "importMode: works correctly on relay" run importMode '{"mode":"relay"}'
+assert "importMode: fails on relay" fail importMode '{"mode":"relay"}'
 
 export OMNIA_MODE=""
 assert "importMode: works correctly" run importMode '{"mode":"feed"}'
@@ -153,21 +153,8 @@ assert "importFeeds: fails on invalid address" fail importFeeds '{"feeds":["asdf
 assert "importFeeds: works with correct address" run importFeeds '{"feeds":["0xBb94f7C5f14fd29EE744b5A54f05f29aE488Fe77"]}'
 assert "importFeeds: puled address" match "^0xBb94f7C5f14fd29EE744b5A54f05f29aE488Fe77$" <<<${feeds[0]}
 
-# importServicesEnv function
-assert "importServicesEnv: fails on non object scuttlebotIdMap" fail importServicesEnv '{"services":{"scuttlebotIdMap":[]}}'
 
 errors=()
-assert "importServicesEnv: runs without errors if no address provided" run importServicesEnv '{"services":{"scuttlebotIdMap":{}}}'
-
-export SSB_ID_MAP=""
-importServicesEnv '{"services":{}}'
-assert "importServicesEnv: set default ssb details if non provided" match "{}" <<<$SSB_ID_MAP
-
-export SSB_ID_MAP=""
-importServicesEnv '{"services":{"scuttlebotIdMap":{"address":"0xBb94f7C5f14fd29EE744b5A54f05f29aE488Fe77"}}}'
-assert "importServicesEnv: set provided address to SSB_ID_MAP" match "0xBb94f7C5f14fd29EE744b5A54f05f29aE488Fe77" <<<$SSB_ID_MAP
-
-
 # importOptionsEnv function
 # Needed to check all feed config parsing as well.
 export OMNIA_MODE="FEED"

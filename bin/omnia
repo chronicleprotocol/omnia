@@ -15,14 +15,13 @@ cd "$(cd "${0%/*/*}" && pwd)/lib"
 . ./util.sh
 . ./transport.sh
 . ./feed.sh
-. ./relay.sh
 . ./omnia.sh
 
 initEnv
-if [[ "$OMNIA_MODE" == "RELAY" ]]; then
-	runRelay
-elif [[ "$OMNIA_MODE" == "FEED" ]]; then
+[[ "$1" == "info" ]] && { echo "DONE"; exit 0; }
+
+if [[ "$OMNIA_MODE" == "FEED" ]]; then
 	runFeed
 else
-	error "Unrecognised OMNIA_MODE"
+	error "Unrecognised OMNIA_MODE: $OMNIA_MODE"
 fi

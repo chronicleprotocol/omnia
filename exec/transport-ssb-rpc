@@ -30,16 +30,6 @@ getMyId() {
 		| jq -r '.id'
 }
 
-getId() {
-	local _addr="$1"
-	if [[ $_addr =~ ^@ ]]
-	then
-		echo "$_addr"
-	else
-		jq -er --arg a "$_addr" '.[$a]' <<<"$SSB_ID_MAP"
-	fi
-}
-
 pullLatestFeedMsgOfType() {
 	local _feedId;_feedId=$(getId "$1")
 	local _assetPair="$2"
@@ -93,7 +83,6 @@ _json=$(jq -e . "$OMNIA_CONFIG")
 	importMode "$_json"
 	importOptionsEnv "$_json"
 	importAssetPairsEnv "$_json"
-	importServicesEnv "$_json"
 } >&2
 
 case "$1" in

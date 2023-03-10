@@ -19,7 +19,7 @@ export -f timestamp
 ssb-server() {
 	case "$1" in
 		whoami)
-			echo '{"id":"f33d1d"}'
+			echo '{"id":"@i40pt/QgqhjIUOvq2166WZr5bXMGt/8/Zr5GD8yQRvA=.ed25519"}'
 			;;
 		publish)
 			cat | tee $wdir/output
@@ -44,10 +44,6 @@ export ETH_PASSWORD="$test_path/tests/resources/password"
 currentTime=$(timestamp 0)
 
 export PATH="${0%/*/*}/exec:${PATH}"
-
-rm -f $wdir/output
-transport-ssb pull "0x1f8fbe73820765677e68eb6e933dcb3c94c9b708" BTC/USD > $wdir/output
-assert "pulled price message" json '.type' <<<'"BTCUSD"'
 
 echo '{}' > $wdir/output
 assert "broadcast price message" run transport-ssb push '{"hash":"AB","price":0.222,"priceHex":"ABC","signature":"CD","sources":{"s1":"0.1","s2":"0.2","s3":"0.3"},"time":'$currentTime',"timeHex":"DEF","type":"BTCUSD","version":"dev-test"}'
