@@ -1,4 +1,4 @@
-name: Build & Push Production Docker Images
+name: Build & Push Production SSB Docker Images
 on:
   workflow_dispatch: # Allow manual trigger
   push: # Build & release on tags
@@ -12,12 +12,12 @@ jobs:
       DOCKER_BUILDKIT: 1
     steps:
       - uses: actions/checkout@v3
-
-      - name: Docker Omnia metadata
-        id: meta
+      
+      - name: Docker SSB Server metadata
+        id: metassb
         uses: docker/metadata-action@v3
         with:
-          images: ghcr.io/chronicleprotocol/omnia
+          images: ghcr.io/chronicleprotocol/ssb_server
           tags: |
             type=raw,value=latest
             type=semver,pattern={{version}}
@@ -42,14 +42,14 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and Publish Omnia Image to Github Packages
+      - name: Build and Publish SSB Server Image to Github Packages
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: ./Dockerfile
+          file: ./docker/ssb-server/Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.metassb.outputs.tags }}
+          labels: ${{ steps.metassb.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max

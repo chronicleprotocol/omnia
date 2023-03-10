@@ -19,6 +19,6 @@ then
   	)
   }' <<<"$_goferData"
 else
-	error "could not get price" "$(jq -r '.error' <<<"$_goferData")"
+	error "could not get price" "$(jq -r '.error' <<<"$_goferData")" "asset=$1"
 	exit 1
 fi

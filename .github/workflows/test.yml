@@ -1,6 +1,7 @@
 name: Omnia Tests
 
 on:
+  workflow_dispatch: # Allow manual trigger only. We have manually controll execution phase
   pull_request:
     branches:
       - master

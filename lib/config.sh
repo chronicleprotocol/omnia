@@ -16,7 +16,7 @@ importEnv () {
 
 	#check if config file is valid json
 	jq -e . "$config" >/dev/null 2>&1 || { error "Error - Config is not valid JSON"; return 1; }
-	_json=$(jq -e . < "$config")
+	_json=$(jq -ce . < "$config")
 
 	importMode "$_json" || return 1
 	importSources "$_json" || return 1
@@ -24,23 +24,18 @@ importEnv () {
 	importEthereumEnv "$_json" || return 1
 	importAssetPairsEnv "$_json" || return 1
 	importOptionsEnv "$_json" || return 1
-	importServicesEnv "$_json" || return 1
-
-	if [[ "$OMNIA_MODE" == "RELAY" ]]; then
-		importFeeds "$_json" || return 1
-	fi
 }
 
 importMode () {
 	local _json="$1"
 	OMNIA_MODE="$(jq -r '.mode' <<<"$_json" | tr '[:lower:]' '[:upper:]')"
-	[[ "$OMNIA_MODE" =~ ^(FEED|RELAY){1}$ ]] || { error "Error - Invalid Mode param, valid values are 'FEED' and 'RELAY'"; return 1; }
+	[[ "$OMNIA_MODE" == "FEED" ]] || { error "Error - Invalid Mode param, valid value is 'FEED'"; return 1; }
 	export OMNIA_MODE
 }
 
 importSources () {
 	local _json="$1"
-	readarray -t OMNIA_FEED_SOURCES < <(jq -r '.sources[]' <<<"$_json")
+	readarray -t OMNIA_FEED_SOURCES < <(jq -c '.sources // []' <<<"$_json" | jq -r '.[]')
 	[[ "${#OMNIA_FEED_SOURCES[@]}" -gt 0 ]] || OMNIA_FEED_SOURCES=("gofer" "setzer")
 }
 
@@ -286,13 +281,3 @@ importOptionsEnv () {
 	[[ -z ${errors[*]} ]] || { printf '%s\n' "${errors[@]}"; return 1; }
 }
 
-importServicesEnv () {
-	local _config="$1"
-	local _services=$(jq -S '.services' <<<"$_config")
-
-	SSB_ID_MAP="$(jq -S '.scuttlebotIdMap // {}' <<<"$_services")"
-	jq -e 'type == "object"' <<<"$SSB_ID_MAP" >/dev/null 2>&1 || errors+=("Error - Scuttlebot ID mapping is invalid, must be Ethereum address -> Scuttlebot id.")
-	export SSB_ID_MAP
-
-	[[ -z ${errors[*]} ]] || { printf '%s\n' "${errors[@]}"; return 1; }
-}

@@ -26,18 +26,8 @@ getMyId() {
 	ssb-rpc-client \
 		--keys "$SSB_KEYS" --caps "$SSB_CONF" \
 		--host "$SSB_HOST" --port "$SSB_PORT" \
-		whoami 2> >(STDERR_DATA="$(cat)"; [[ -z "$STDERR_DATA" ]] || verbose "ssb-rpc [stderr]" "host=$SSB_HOST" "port=$SSB_PORT" "$STDERR_DATA") \
+		whoami 2> >( STDERR_DATA="$(cat)"; [[ -z "$STDERR_DATA" ]] || verbose --raw "ssb-rpc [stderr]" "host=$SSB_HOST" "port=$SSB_PORT" "$STDERR_DATA") \
 		| jq -r '.id'
-}
-
-getId() {
-	local _addr="$1"
-	if [[ $_addr =~ ^@ ]]
-	then
-		echo "$_addr"
-	else
-		jq -er --arg a "$_addr" '.[$a]' <<<"$SSB_ID_MAP"
-	fi
 }
 
 pullLatestFeedMsgOfType() {
@@ -50,7 +40,7 @@ pullLatestFeedMsgOfType() {
 		--keys "$SSB_KEYS" --caps "$SSB_CONF" \
 		--host "$SSB_HOST" --port "$SSB_PORT" \
 		pull --id "$_feedId" --type "$_assetPair" --limit "$OMNIA_MSG_LIMIT" \
-		2> >(STDERR_DATA="$(cat)"; [[ -z "$STDERR_DATA" ]] ||verbose "ssb-rpc [stderr]" "host=$SSB_HOST" "port=$SSB_PORT" "$STDERR_DATA"))
+		2> >( STDERR_DATA="$(cat)"; [[ -z "$STDERR_DATA" ]] ||verbose --raw "ssb-rpc [stderr]" "host=$SSB_HOST" "port=$SSB_PORT" "$STDERR_DATA"))
 	then
 		jq -cM '
 			{
@@ -83,17 +73,16 @@ publishMsg() {
 		ssb-rpc-client \
 			--keys "$SSB_KEYS" --caps "$SSB_CONF" \
 			--host "$SSB_HOST" --port "$SSB_PORT" \
-			push "$_msg" 2> >(STDERR_DATA="$(cat)"; [[ -z "$STDERR_DATA" ]] || verbose "ssb-rpc [stderr]" "host=$SSB_HOST" "port=$SSB_PORT" "$STDERR_DATA") \
+			push "$_msg" 2> >( STDERR_DATA="$(cat)"; [[ -z "$STDERR_DATA" ]] || verbose --raw "ssb-rpc [stderr]" "host=$SSB_HOST" "port=$SSB_PORT" "$STDERR_DATA") \
 			| jq -c .
 	fi
 }
-STDERR_DATA="$(cat)"; [[ -z "$STDERR_DATA" ]] || verbose "ethsign [stderr]" "#=$STDERR_DATA"
+
 _json=$(jq -e . "$OMNIA_CONFIG")
 {
 	importMode "$_json"
 	importOptionsEnv "$_json"
 	importAssetPairsEnv "$_json"
-	importServicesEnv "$_json"
 } >&2
 
 case "$1" in

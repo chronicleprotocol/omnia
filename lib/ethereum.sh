@@ -96,7 +96,7 @@ pushOraclePrice () {
 				"[$(join "${allR[@]}")]" \
 				"[$(join "${allS[@]}")]")
 
-		# signing tx, cast dont dupport ethsign, so have to do it manually
+		# signing tx, cast dont support ethsign, so have to do it manually
 		local _txdata
 		_txdata=$(signTxBeforePush $_oracleContract $_calldata $_fees)
 

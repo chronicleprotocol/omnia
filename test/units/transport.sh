@@ -78,22 +78,3 @@ assert "time should be separate times " json -s '[.[].time]' <<<"[1607032851,160
 
 OMNIA_TRANSPORTS=(mock-fail)
 assert "should fail if transport exits non-zero" fail transportPublish "BTC/USD" "$transportMessage"
-
-OMNIA_TRANSPORTS=(mock mock-latest)
-assert "pull message from two transports" run_json transportPull f33d1d "BTC/USD"
-assert "type should be BTCUSD" json '.type' <<<'"BTCUSD"'
-assert "time should be from latest message" json '.time' <<<"1607032861"
-
-OMNIA_TRANSPORTS=(mock-mallformed)
-assert "should fail if transport returns mallformed JSON" fail transportPull f33d1d "BTC/USD"
-
-OMNIA_TRANSPORTS=(mock-empty)
-assert "should fail if transport returns empty JSON" fail transportPull f33d1d "BTC/USD"
-
-OMNIA_TRANSPORTS=(mock-fail)
-assert "should fail if transport returns non-zero exit code" fail transportPull f33d1d "BTC/USD"
-
-OMNIA_TRANSPORTS=(mock-fail mock)
-assert "pull message from one transport that fails and one that succeeds" run_json transportPull f33d1d "BTC/USD"
-assert "type should be BTCUSD" json '.type' <<<'"BTCUSD"'
-assert "time should be from latest message" json '.time' <<<"1607032851"

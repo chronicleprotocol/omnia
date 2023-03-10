@@ -1,30 +1,10 @@
-FROM alpine:3.16 as rust-builder
-ARG TARGETARCH
-
-WORKDIR /opt
-RUN apk add clang lld curl build-base linux-headers git \
-  && curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs > rustup.sh \
-  && chmod +x ./rustup.sh \
-  && ./rustup.sh -y
-
-RUN [[ "$TARGETARCH" = "arm64" ]] && echo "export CFLAGS=-mno-outline-atomics" >> $HOME/.profile || true
-
-WORKDIR /opt/foundry
-
-ARG CAST_REF="master"
-RUN git clone https://github.com/foundry-rs/foundry.git . \
-  && git checkout --quiet ${CAST_REF} 
-
-RUN source $HOME/.profile && cargo build --release \
-  && strip /opt/foundry/target/release/cast
-
 FROM golang:1.18-alpine3.16 as go-builder
 RUN apk --no-cache add git
 
 ARG CGO_ENABLED=0
 
 WORKDIR /go/src/omnia
-ARG ETHSIGN_REF="tags/v1.11.0"
+ARG ETHSIGN_REF="tags/v1.13.3"
 RUN git clone https://github.com/chronicleprotocol/omnia.git . \
   && git checkout --quiet ${ETHSIGN_REF} \
   && cd ethsign \
@@ -33,7 +13,7 @@ RUN git clone https://github.com/chronicleprotocol/omnia.git . \
 
 # Building gofer & spire
 WORKDIR /go/src/oracle-suite
-ARG ORACLE_SUITE_REF="tags/v0.7.2"
+ARG ORACLE_SUITE_REF="tags/v0.8.2"
 RUN git clone https://github.com/chronicleprotocol/oracle-suite.git . \
   && git checkout --quiet ${ORACLE_SUITE_REF}
 
@@ -42,25 +22,16 @@ RUN go mod vendor \
     && go build ./cmd/gofer \
     && go build ./cmd/ssb-rpc-client
 
-FROM python:3.9-alpine3.16
-
-ENV GLIBC_KEY=https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub
-ENV GLIBC_KEY_FILE=/etc/apk/keys/sgerrand.rsa.pub
-ENV GLIBC_RELEASE=https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.35-r0/glibc-2.35-r0.apk
+FROM ghcr.io/chronicleprotocol/omnia_base:latest
 
 RUN apk add --update --no-cache \
   jq curl git make perl g++ ca-certificates parallel tree \
-  bash bash-doc bash-completion linux-headers gcompat git \
+  bash bash-doc bash-completion \
   util-linux pciutils usbutils coreutils binutils findutils grep iproute2 \
   nodejs \
   && apk add --no-cache -X https://dl-cdn.alpinelinux.org/alpine/edge/testing \
   jshon agrep datamash
 
-RUN wget -q -O ${GLIBC_KEY_FILE} ${GLIBC_KEY} \
-  && wget -O glibc.apk ${GLIBC_RELEASE} \
-  && apk add glibc.apk --force
-
-COPY --from=rust-builder /opt/foundry/target/release/cast /usr/local/bin/cast
 COPY --from=go-builder \
   /go/src/omnia/ethsign/ethsign \
   /go/src/oracle-suite/spire \
@@ -76,7 +47,7 @@ COPY ./lib /opt/omnia/lib/
 COPY ./version /opt/omnia/version
 
 # Installing setzer
-ARG SETZER_REF="tags/v0.5.1"
+ARG SETZER_REF="tags/v0.7.0"
 RUN git clone https://github.com/chronicleprotocol/setzer.git \
   && cd setzer \
   && git checkout --quiet ${SETZER_REF} \
