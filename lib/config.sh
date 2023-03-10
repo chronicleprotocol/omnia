@@ -24,7 +24,6 @@ importEnv () {
 	importEthereumEnv "$_json" || return 1
 	importAssetPairsEnv "$_json" || return 1
 	importOptionsEnv "$_json" || return 1
-	importServicesEnv "$_json" || return 1
 }
 
 importMode () {
@@ -282,12 +281,3 @@ importOptionsEnv () {
 	[[ -z ${errors[*]} ]] || { printf '%s\n' "${errors[@]}"; return 1; }
 }
 
-importServicesEnv () {
-	local _config="$1"
-
-	SSB_ID_MAP="$(jq -S '.scuttlebotIdMap // {}' <<<"$_config")"
-	jq -e 'type == "object"' <<<"$SSB_ID_MAP" >/dev/null 2>&1 || errors+=("Error - Scuttlebot ID mapping is invalid, must be Ethereum address -> Scuttlebot id.")
-	export SSB_ID_MAP
-
-	[[ -z ${errors[*]} ]] || { printf '%s\n' "${errors[@]}"; return 1; }
-}
