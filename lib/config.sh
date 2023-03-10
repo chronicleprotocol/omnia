@@ -16,7 +16,7 @@ importEnv () {
 
 	#check if config file is valid json
 	jq -e . "$config" >/dev/null 2>&1 || { error "Error - Config is not valid JSON"; return 1; }
-	_json=$(jq -e . < "$config")
+	_json=$(jq -ce . < "$config")
 
 	importMode "$_json" || return 1
 	importSources "$_json" || return 1
@@ -29,13 +29,13 @@ importEnv () {
 importMode () {
 	local _json="$1"
 	OMNIA_MODE="$(jq -r '.mode' <<<"$_json" | tr '[:lower:]' '[:upper:]')"
-	[[ "$OMNIA_MODE" =~ ^(FEED|RELAY){1}$ ]] || { error "Error - Invalid Mode param, valid values are 'FEED' and 'RELAY'"; return 1; }
+	[[ "$OMNIA_MODE" == "FEED" ]] || { error "Error - Invalid Mode param, valid value is 'FEED'"; return 1; }
 	export OMNIA_MODE
 }
 
 importSources () {
 	local _json="$1"
-	readarray -t OMNIA_FEED_SOURCES < <(jq -r '.sources[]' <<<"$_json")
+	readarray -t OMNIA_FEED_SOURCES < <(jq -c '.sources // []' <<<"$_json" | jq -r '.[]')
 	[[ "${#OMNIA_FEED_SOURCES[@]}" -gt 0 ]] || OMNIA_FEED_SOURCES=("gofer" "setzer")
 }
 

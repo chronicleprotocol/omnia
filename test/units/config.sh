@@ -104,7 +104,7 @@ assert "importMode: fails on invalid mode" fail importMode '{"mode":"blahblah"}'
 
 errors=()
 assert "importMode: works correctly on feed" run importMode '{"mode":"feed"}'
-assert "importMode: works correctly on relay" run importMode '{"mode":"relay"}'
+assert "importMode: fails on relay" fail importMode '{"mode":"relay"}'
 
 export OMNIA_MODE=""
 assert "importMode: works correctly" run importMode '{"mode":"feed"}'

@@ -26,16 +26,6 @@ getMyId() {
 	ssb-server whoami 2> >(STDERR_DATA="$(cat)"; [[ -z "$STDERR_DATA" ]] || verbose --raw "ssb-server whoami [stderr]" "$STDERR_DATA") | jq -r '.id'
 }
 
-getId() {
-	local _addr="$1"
-	if [[ $_addr =~ ^@ ]]
-	then
-		echo "$_addr"
-	else
-		error "bad ID format" "transport=ssb" "id=$_addr"
-	fi
-}
-
 pullLatestFeedMsgOfType() {
 	local _feedId;_feedId=$(getId "$1")
 	local _assetPair="$2"
