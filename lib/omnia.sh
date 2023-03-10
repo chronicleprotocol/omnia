@@ -71,11 +71,3 @@ runFeed () {
 		sleep "$OMNIA_INTERVAL"
 	done
 }
-
-runRelay () {
-    while true; do
-		updateOracle
-		verbose "Sleeping $OMNIA_INTERVAL seconds.."
-		sleep "$OMNIA_INTERVAL"
-    done
-}
