@@ -16,7 +16,7 @@ RUN git clone https://github.com/ssbc/ssb-server . \
 RUN npm install
 
 # Patching ssb-server
-RUN wget https://raw.githubusercontent.com/chronicleprotocol/oracles/master/ssb-server/ssb-db%2B19.2.0.patch \
+RUN wget https://raw.githubusercontent.com/chronicleprotocol/oracles/main/ssb-server/ssb-db%2B19.2.0.patch \
   && git apply ssb-db+19.2.0.patch
 
 # COPY ./docker/ssb-server/bin/run.sh /root/ssb/bin/
